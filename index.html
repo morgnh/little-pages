@@ -1,10 +1,217 @@
-<!DOCTYPE html>
-<html>
-<head><title>my little pages</title></head>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>my little pages</title>
+<style>
+  /* One look: a 90s personal homepage in a browser window on a teal desktop.
+     Every colour set explicitly, light scheme only. */
+  :root {
+    --desk: #008080;
+    --face: #c0c0c0;
+    --hi: #ffffff;
+    --lite: #dfdfdf;
+    --shade: #808080;
+    --dark: #000000;
+    --title1: #000080;
+    --title2: #1084d0;
+    --page: #c0c0c0;
+    --ink: #000000;
+    --muted: #1e1e1e;
+    --link: #0000ee;
+    --visited: #551a8b;
+    --serif: "Times New Roman", Times, Georgia, serif;
+    --ui: Tahoma, Verdana, "Segoe UI", sans-serif;
+    --mono: "Courier New", Courier, monospace;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background-color: var(--desk);
+    background-image:
+      linear-gradient(45deg, rgba(255,255,255,.035) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.035) 75%),
+      linear-gradient(45deg, rgba(0,0,0,.035) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.035) 75%);
+    background-size: 4px 4px;
+    background-position: 0 0, 2px 2px;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.45;
+    text-transform: lowercase;
+    padding: 20px max(12px, env(safe-area-inset-right, 0px)) 40px max(12px, env(safe-area-inset-left, 0px));
+  }
+  a { color: var(--link); }
+  a:visited { color: var(--visited); }
+  a:focus-visible { outline: 2px dotted var(--ink); outline-offset: 2px; }
+
+  .bevel-out { border: 2px solid; border-color: var(--lite) var(--dark) var(--dark) var(--lite);
+    box-shadow: inset 1px 1px var(--hi), inset -1px -1px var(--shade); }
+  .bevel-in { border: 2px solid; border-color: var(--dark) var(--lite) var(--lite) var(--dark);
+    box-shadow: inset 1px 1px var(--shade); }
+
+  /* the window */
+  .win {
+    max-width: 840px; margin: 0 auto; padding: 3px; background: var(--face);
+    border: 2px solid; border-color: var(--lite) var(--dark) var(--dark) var(--lite);
+    box-shadow: inset 1px 1px var(--hi), inset -1px -1px var(--shade), 8px 8px 0 rgba(0,0,0,.28);
+  }
+  .bar {
+    display: flex; align-items: center; gap: 6px; padding: 3px 4px;
+    background: linear-gradient(90deg, var(--title1), var(--title2));
+    color: #fff; font: 700 13px/1 var(--ui);
+  }
+  .bar b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar .ctrls { display: flex; gap: 2px; flex: none; }
+  .bar .ctrls i {
+    width: 18px; height: 16px; display: grid; place-items: center;
+    background: var(--face); color: var(--ink); font: 700 11px/1 var(--ui); font-style: normal;
+    border: 1px solid; border-color: var(--hi) var(--dark) var(--dark) var(--hi);
+  }
+  .menu { display: flex; gap: 4px 16px; flex-wrap: wrap; padding: 4px 7px; font: 12px var(--ui); }
+  .addr {
+    display: flex; align-items: center; gap: 8px; padding: 4px 6px 6px;
+    font: 12px var(--ui);
+  }
+  .addr .field {
+    flex: 1; min-width: 0; padding: 3px 6px; background: #fff;
+    font: 12px var(--mono); color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    border: 1px solid; border-color: var(--dark) var(--lite) var(--lite) var(--dark);
+  }
+
+  .btn {
+    padding: 2px 12px 3px; background: var(--face); color: var(--ink); font: 12px var(--ui);
+    border: 1px solid; border-color: var(--hi) var(--dark) var(--dark) var(--hi);
+  }
+  .page { margin: 0 2px; padding: 18px; background: var(--page); display: grid; gap: 18px;
+    border: 1px solid; border-color: var(--shade) var(--hi) var(--hi) var(--shade); }
+
+  /* banner */
+  .banner { background: #000; color: #fff; padding: 16px 14px 14px; text-align: center; }
+  .banner h1 {
+    margin: 0; font: 700 clamp(26px, 7vw, 40px)/1 var(--serif);
+    letter-spacing: .3em; text-transform: lowercase; text-indent: .3em;
+  }
+  .banner p { margin: 10px 0 0; font: italic 15px/1.4 var(--serif); color: #e6e6e6; }
+  .banner .rule { height: 1px; background: #f1d27a; margin: 14px auto 0; max-width: 360px; }
+
+  /* drawers */
+  .drawers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .drawer {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 14px 10px 12px; text-decoration: none; text-align: center;
+    background: var(--face); color: var(--ink);
+    border: 2px solid; border-color: var(--hi) var(--dark) var(--dark) var(--hi);
+    box-shadow: inset -1px -1px var(--shade), inset 1px 1px var(--lite), 3px 3px 0 rgba(0,0,0,.22);
+    font: 700 15px/1.2 var(--serif);
+  }
+  .drawer:hover { background: #cdcdcd; }
+  .drawer.is-empty { color: #2b2b2b; cursor: default; box-shadow: inset -1px -1px var(--shade), inset 1px 1px var(--lite); }
+  .drawer.is-empty small { color: #2b2b2b; }
+  .drawer:active { border-color: var(--dark) var(--hi) var(--hi) var(--dark);
+    box-shadow: inset 1px 1px var(--shade); transform: translate(2px, 2px); }
+  .drawer .tile { width: 62px; height: 44px; display: grid; place-items: center; background: var(--c, #000080); }
+  .drawer svg { width: 26px; height: 26px; display: block; }
+  .drawer small { display: block; font: 12px/1.35 var(--ui); font-weight: 400; color: var(--muted); }
+
+  /* readme */
+  .note { background: #fff; color: var(--ink); padding: 12px 14px;
+    border: 2px solid; border-color: var(--dark) var(--lite) var(--lite) var(--dark); }
+  .note h2 { margin: 0 0 6px; font: 700 13px/1 var(--mono); letter-spacing: .08em; }
+  .note p { margin: 0; font: 15px/1.5 var(--serif); }
+  .note p + p { margin-top: 8px; }
+
+  /* updates */
+  .log h2 { margin: 0 0 6px; font: 700 13px/1 var(--mono); letter-spacing: .1em; }
+  .log ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+  .log li { font: 15px/1.4 var(--serif); }
+  .log time { font: 12px var(--mono); color: #333; margin-right: 8px; }
+
+  .status {
+    display: flex; justify-content: space-between; gap: 10px; padding: 3px 6px; margin: 2px 2px 3px;
+    font: 11px var(--ui); color: var(--ink);
+    border-top: 1px solid var(--shade); box-shadow: inset 0 1px 0 var(--hi);
+  }
+  .status span:first-child { border: 1px solid; border-color: var(--shade) var(--hi) var(--hi) var(--shade); padding: 1px 8px 0; }
+
+  @media (max-width: 620px) {
+    body { font-size: 16px; padding-top: 10px; }
+    .page { padding: 12px; gap: 14px; }
+    .drawers { grid-template-columns: 1fr; }
+    .drawer { flex-direction: row; text-align: left; gap: 12px; padding: 10px; }
+    .drawer .tile { flex: none; }
+    .menu { display: none; }
+    .banner h1 { letter-spacing: .18em; text-indent: .18em; }
+    .status span:last-child { display: none; }
+  }
+</style>
+</head>
 <body>
-<h1>my little pages</h1>
-<p>a storage closet for things i make.</p>
-  <p><a href="keepers-index.html">the keepers index</a></p>
-  <p><a href="widgets/">the widgets</a></p>
+  <div class="win">
+    <div class="bar">
+      <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="14" height="11" fill="#fff" stroke="#000"/><rect x="1" y="2" width="14" height="2" fill="#000080"/></svg>
+      <b>my little pages</b>
+      <span class="ctrls" aria-hidden="true"><i>_</i><i>□</i><i>×</i></span>
+    </div>
+    <div class="menu" aria-hidden="true">
+      <span>file</span><span>edit</span><span>view</span><span>go</span><span>bookmarks</span><span>help</span>
+    </div>
+    <div class="addr">
+      <span>address</span>
+      <span class="field">http://morgnh.github.io/little-pages/</span>
+      <span class="btn" aria-hidden="true">go</span>
+    </div>
+
+    <div class="page">
+      <header class="banner">
+        <h1>my little pages</h1>
+        <p>a storage closet for things i make.</p>
+        <div class="rule"></div>
+      </header>
+
+      <nav class="drawers" aria-label="drawers">
+        <a class="drawer" href="keepers-index.html" style="--c:#000080">
+          <span class="tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M3 6h6l2 2h10v11H3z"/><path d="M3 10h18"/></svg>
+          </span>
+          <span>the keepers index<small>clippings worth keeping</small></span>
+        </a>
+        <a class="drawer" href="widgets/" style="--c:#800080">
+          <span class="tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M9 20h6M12 16v4"/></svg>
+          </span>
+          <span>the widgets<small>three small things that run</small></span>
+        </a>
+        <span class="drawer is-empty" style="--c:#4a4a4a">
+          <span class="tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M4 9h16v11H4z"/><path d="M4 9l3-4h10l3 4"/><path d="M10 13h4"/></svg>
+          </span>
+          <span>empty drawer<small>reserved for whatever's next</small></span>
+        </span>
+      </nav>
+
+      <section class="note">
+        <h2>readme.txt</h2>
+        <p>this is a closet, not a portfolio. things get moved around, and some shelves are still
+        empty on purpose. if a link breaks, i probably reorganised the closet and forgot to sweep.</p>
+        <p>everything here is made by hand and most of it is small.</p>
+      </section>
+
+      <section class="log">
+        <h2>recently</h2>
+        <ul>
+          <li><time>2026-11-21</time>opened the closet. hung up the widgets.</li>
+          <li><time>2026-11-21</time>the keepers index moved into a browser window.</li>
+          <li><time>2026-11-21</time>started this page. it used to be four lines of html.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="status">
+      <span>done</span>
+      <span>no cookies, no tracking, no scripts</span>
+    </div>
+  </div>
 </body>
 </html>
