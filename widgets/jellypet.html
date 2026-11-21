@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jelly Pet</title>
+<style>
+  * { box-sizing: border-box; }
+
+  .wrap {
+    width: 100%;
+    max-width: 560px;
+    padding: 4px 0 8px;
+    color: var(--foreground);
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    margin-bottom: 2px;
+  }
+  .eyebrow b { color: var(--foreground); font-weight: 600; }
+
+  .kicker {
+    font-size: 12px;
+    color: var(--muted-foreground);
+    margin: 0 0 14px;
+    max-width: 46ch;
+    line-height: 1.45;
+  }
+
+  .device {
+    position: relative;
+    width: 300px;
+    max-width: 100%;
+    padding: 16px 16px 20px;
+    border-radius: 34px 34px 42px 42px / 30px 30px 46px 46px;
+    background:
+      radial-gradient(120% 90% at 22% 8%, rgba(255,255,255,.42), rgba(255,255,255,0) 46%),
+      linear-gradient(158deg, rgba(186,136,255,.46) 0%, rgba(132,82,220,.55) 46%, rgba(88,48,164,.62) 100%);
+    border: 1px solid rgba(255,255,255,.4);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.65),
+      inset 0 -16px 30px rgba(40,10,80,.35),
+      0 18px 34px -14px rgba(30,6,60,.55),
+      inset 0 0 26px rgba(226,206,255,.22);
+    backdrop-filter: blur(9px) saturate(140%);
+    -webkit-backdrop-filter: blur(9px) saturate(140%);
+    isolation: isolate;
+  }
+
+  .device::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image:
+      radial-gradient(1.4px 1.4px at 18% 22%, rgba(255,255,255,.9), transparent 60%),
+      radial-gradient(1.2px 1.2px at 74% 14%, rgba(255,255,255,.75), transparent 60%),
+      radial-gradient(1.6px 1.6px at 62% 78%, rgba(255,255,255,.6), transparent 60%),
+      radial-gradient(1.1px 1.1px at 30% 88%, rgba(255,255,255,.7), transparent 60%),
+      radial-gradient(1.3px 1.3px at 88% 54%, rgba(255,255,255,.65), transparent 60%),
+      radial-gradient(1px 1px at 46% 40%, rgba(255,255,255,.8), transparent 60%);
+    opacity: .85;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .chassis {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    opacity: .85;
+    filter: blur(1.1px) saturate(125%);
+  }
+
+  /* green fibreglass board seen through the plastic */
+  .pcb {
+    position: absolute;
+    left: 7px; right: 7px; bottom: 7px;
+    height: 104px;
+    border-radius: 10px;
+    background:
+      radial-gradient(3px 3px at 18% 26%, rgba(240,208,120,.95), transparent 62%),
+      radial-gradient(3px 3px at 72% 22%, rgba(240,208,120,.85), transparent 62%),
+      radial-gradient(3px 3px at 44% 74%, rgba(240,208,120,.8), transparent 62%),
+      radial-gradient(3px 3px at 86% 66%, rgba(240,208,120,.8), transparent 62%),
+      repeating-linear-gradient(104deg, rgba(236,200,96,.34) 0 1px, transparent 1px 17px),
+      linear-gradient(180deg, rgba(110,192,132,.42), rgba(38,102,72,.4));
+    border: 1px solid rgba(210,255,220,.22);
+    opacity: .8;
+  }
+
+  /* frost over the board so it reads as seen through plastic */
+  .pcb::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(178deg, rgba(255,255,255,.22), rgba(255,255,255,.04) 40%, rgba(24,6,48,.28));
+  }
+
+  /* speaker grille */
+  .grille {
+    position: absolute;
+    right: 26px; bottom: 24px;
+    width: 46px; height: 34px;
+    background-image: radial-gradient(2px 2px at 3px 3px, rgba(255,255,255,.4), transparent 60%);
+    background-size: 8px 8px;
+    border-radius: 4px;
+    opacity: 1;
+    filter: none;
+  }
+  .cell {
+    position: absolute;
+    right: 20px; top: 18px;
+    width: 52px; height: 20px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, rgba(198,255,120,.55), rgba(120,190,60,.4));
+    border: 1px solid rgba(255,255,255,.35);
+  }
+  .cell::after {
+    content: "";
+    position: absolute; left: 50%; top: -3px;
+    width: 10px; height: 4px; transform: translateX(-50%);
+    background: rgba(255,255,255,.5);
+    border-radius: 2px;
+  }
+  .screws {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .screw {
+    position: absolute;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #f2ecff, #6b5a86 70%);
+    box-shadow: 0 0 0 1px rgba(255,255,255,.25);
+  }
+  .screw.a { left: 10px; top: 10px; }
+  .screw.b { right: 10px; bottom: 10px; }
+  .screw.c { left: 10px; bottom: 10px; }
+
+  .screen-frame {
+    position: relative;
+    z-index: 2;
+    padding: 9px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(48,26,84,.85), rgba(28,14,54,.9));
+    box-shadow:
+      inset 0 2px 6px rgba(0,0,0,.6),
+      0 1px 0 rgba(255,255,255,.35);
+  }
+
+  .lcd {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #b7d86a;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+
+  .glass {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(160deg, rgba(255,255,255,.42) 0%, rgba(255,255,255,.06) 38%, rgba(255,255,255,0) 52%),
+      repeating-linear-gradient(0deg, rgba(30,50,10,.10) 0 1px, rgba(0,0,0,0) 1px 3px);
+    mix-blend-mode: screen;
+    opacity: .9;
+  }
+  .lcd::after {
+    content: "";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    box-shadow: inset 0 0 18px rgba(38,58,10,.55), inset 0 0 3px rgba(20,34,4,.8);
+  }
+
+  .controls {
+    position: relative;
+    z-index: 2;
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .dpad {
+    position: relative;
+    width: 74px; height: 74px;
+    flex: 0 0 auto;
+  }
+  .dpad span {
+    position: absolute;
+    background: linear-gradient(180deg, rgba(255,255,255,.45), rgba(52,26,98,.62));
+    border: 1px solid rgba(255,255,255,.45);
+    border-radius: 4px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.55),
+      inset 0 -2px 3px rgba(30,8,60,.5),
+      0 2px 3px rgba(30,8,60,.35);
+  }
+  .dpad .up    { left: 26px; top: 0;     width: 22px; height: 26px; }
+  .dpad .down  { left: 26px; bottom: 0;  width: 22px; height: 26px; }
+  .dpad .left  { left: 0;    top: 26px;  width: 26px; height: 22px; }
+  .dpad .right { right: 0;   top: 26px;  width: 26px; height: 22px; }
+  .dpad .hub   { left: 26px; top: 26px;  width: 22px; height: 22px; border-radius: 0; }
+
+  .pills { display: flex; gap: 9px; flex: 0 1 auto; }
+
+  button.pill {
+    position: relative;
+    appearance: none;
+    cursor: pointer;
+    border-radius: 999px;
+    padding: 11px 15px 12px;
+    font: inherit;
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #2b0f52;
+    border: 1px solid rgba(255,255,255,.62);
+    background:
+      radial-gradient(90% 70% at 30% 18%, rgba(255,255,255,.85), rgba(255,255,255,0) 60%),
+      linear-gradient(180deg, rgba(214,255,150,.98), rgba(150,214,72,.95));
+    box-shadow:
+      inset 0 -3px 0 rgba(60,110,10,.4),
+      inset 0 1px 0 rgba(255,255,255,.9),
+      0 3px 0 rgba(52,20,96,.5),
+      0 7px 12px -6px rgba(20,4,40,.6);
+    transition: transform .07s ease, box-shadow .07s ease;
+  }
+  button.pill:hover { filter: brightness(1.05); }
+  button.pill:active {
+    transform: translateY(3px);
+    box-shadow:
+      inset 0 -1px 0 rgba(60,110,10,.4),
+      inset 0 1px 0 rgba(255,255,255,.9),
+      0 1px 0 rgba(52,20,96,.5);
+  }
+  button.pill.pink {
+    background:
+      radial-gradient(90% 70% at 30% 18%, rgba(255,255,255,.85), rgba(255,255,255,0) 60%),
+      linear-gradient(180deg, rgba(255,178,222,.98), rgba(226,104,178,.95));
+    box-shadow:
+      inset 0 -3px 0 rgba(140,20,80,.38),
+      inset 0 1px 0 rgba(255,255,255,.9),
+      0 3px 0 rgba(52,20,96,.5),
+      0 7px 12px -6px rgba(20,4,40,.6);
+    color: #3d0b2a;
+  }
+  button.pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .brand {
+    position: relative;
+    z-index: 2;
+    margin-top: 13px;
+    text-align: right;
+    font-size: 9px;
+    letter-spacing: .34em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.72);
+    text-shadow: 0 1px 0 rgba(60,20,110,.6);
+  }
+  .brand s { text-decoration: none; font-size: 7px; vertical-align: super; }
+
+  .readout { margin-top: 16px; display: grid; gap: 9px; }
+  .meter {
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    align-items: center;
+    gap: 10px;
+  }
+  .meter .label {
+    font-size: 9px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+  .segs { display: flex; gap: 3px; }
+  .segs i {
+    flex: 1 1 0;
+    height: 9px;
+    border-radius: 1px;
+    background: var(--border);
+    transition: background .18s ease, box-shadow .18s ease;
+  }
+  .segs i.on {
+    background: linear-gradient(180deg, #d9ff9a, #86c93a);
+    box-shadow: 0 0 6px rgba(150,220,70,.4);
+  }
+  .segs.joy i.on {
+    background: linear-gradient(180deg, #ffc2e2, #e468b2);
+    box-shadow: 0 0 6px rgba(230,110,180,.4);
+  }
+
+  .status {
+    font-size: 12px;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    min-height: 3em;
+  }
+  .status b { color: var(--foreground); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">clear tech × retro gamer &nbsp;/&nbsp; <b>grape</b></div>
+  <p class="kicker">A translucent-shelled virtual pet. It's not useful. That's the point. Feed it, play with it, and it will absolutely sulk if you leave.</p>
+
+  <div class="device">
+    <div class="chassis" aria-hidden="true">
+      <div class="pcb"></div>
+      <div class="cell"></div>
+      <div class="grille"></div>
+    </div>
+    <div class="screws" aria-hidden="true">
+      <div class="screw a"></div>
+      <div class="screw b"></div>
+      <div class="screw c"></div>
+    </div>
+
+    <div class="screen-frame">
+      <div class="lcd">
+        <canvas id="lcd" width="96" height="72"></canvas>
+        <div class="glass" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="dpad" aria-hidden="true">
+        <span class="up"></span><span class="down"></span>
+        <span class="left"></span><span class="right"></span>
+        <span class="hub"></span>
+      </div>
+      <div class="pills">
+        <button class="pill" id="feed">Feed</button>
+        <button class="pill pink" id="play">Play</button>
+      </div>
+    </div>
+
+    <div class="brand">jellypet<s>®</s></div>
+  </div>
+
+  <div class="readout">
+    <div class="meter">
+      <span class="label">Snacks</span>
+      <div class="segs" id="m-food"></div>
+    </div>
+    <div class="meter">
+      <span class="label">Trouble</span>
+      <div class="segs joy" id="m-joy"></div>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const c = document.getElementById('lcd');
+  const g = c.getContext('2d');
+  const W = c.width, H = c.height;
+
+  const SEGS = 12;
+  const foodEl = document.getElementById('m-food');
+  const joyEl  = document.getElementById('m-joy');
+  const statusEl = document.getElementById('status');
+
+  for (let i = 0; i < SEGS; i++) {
+    foodEl.appendChild(document.createElement('i'));
+    joyEl.appendChild(document.createElement('i'));
+  }
+
+  const state = { food: 0.62, joy: 0.48, blinking: false, hearts: [], t: 0 };
+
+  function px(x, y, w, h, col) { g.fillStyle = col; g.fillRect(x, y, w, h); }
+
+  function dither(x, y, w, h, col, step) {
+    g.fillStyle = col;
+    for (let yy = y; yy < y + h; yy += step) {
+      for (let xx = x + ((Math.floor(yy / step)) % 2 ? 0 : 1); xx < x + w; xx += step) {
+        g.fillRect(xx, yy, 1, 1);
+      }
+    }
+  }
+
+  const INK = '#22350a';
+  const INK_SOFT = 'rgba(34,53,10,.45)';
+
+  function drawScene() {
+    g.fillStyle = '#b7d86a';
+    g.fillRect(0, 0, W, H);
+
+    g.globalAlpha = 0.26;
+    dither(0, 0, W, 26, '#e2f5b0', 2);
+    g.globalAlpha = 1;
+
+    px(0, 52, W, 1, INK_SOFT);
+    g.globalAlpha = 0.3;
+    dither(0, 53, W, H - 53, '#8fb545', 2);
+    g.globalAlpha = 1;
+
+    px(70, 40, 20, 12, 'rgba(34,53,10,.22)');
+    px(70, 38, 20, 2, 'rgba(34,53,10,.3)');
+    px(73, 32, 2, 6, 'rgba(34,53,10,.3)');
+    px(85, 32, 2, 6, 'rgba(34,53,10,.3)');
+    px(74, 44, 4, 8, 'rgba(34,53,10,.3)');
+
+    drawPet();
+    drawHearts();
+    drawSleep();
+  }
+
+  function sleeping() {
+    return state.t % 60 > 46 && state.food > 0.5;
+  }
+
+  function drawPet() {
+    const cx = 30, base = 52;
+    const hungry = state.food < 0.25;
+    const bored  = state.joy < 0.28;
+    const asleep = sleeping();
+
+    px(cx - 12, base - 16, 24, 16, INK);
+    px(cx - 9, base - 2, 4, 2, INK);
+    px(cx + 5, base - 2, 4, 2, INK);
+
+    px(cx + 12, base - 14, 2, 4, INK);
+    px(cx + 13, base - 18, 2, 5, INK);
+    px(cx + 11, base - 20, 3, 2, INK);
+
+    px(cx - 10, base - 22, 3, 6, INK);
+    px(cx + 7, base - 22, 3, 6, INK);
+    px(cx - 9, base - 24, 2, 3, INK);
+    px(cx + 8, base - 24, 2, 3, INK);
+
+    px(cx - 11, base - 20, 22, 12, INK);
+    px(cx - 9, base - 18, 18, 9, '#c9e586');
+
+    if (asleep || state.blinking) {
+      px(cx - 7, base - 15, 4, 1, INK);
+      px(cx + 3, base - 15, 4, 1, INK);
+    } else if (hungry) {
+      px(cx - 7, base - 17, 4, 5, INK);
+      px(cx + 3, base - 17, 4, 5, INK);
+      px(cx - 6, base - 16, 1, 1, '#c9e586');
+      px(cx + 4, base - 16, 1, 1, '#c9e586');
+    } else {
+      px(cx - 7, base - 16, 4, 4, INK);
+      px(cx + 3, base - 16, 4, 4, INK);
+    }
+
+    px(cx - 1, base - 12, 2, 1, INK);
+    if (bored) {
+      px(cx - 3, base - 10, 6, 1, INK);
+    } else {
+      px(cx - 3, base - 10, 1, 1, INK);
+      px(cx + 2, base - 10, 1, 1, INK);
+      px(cx - 2, base - 9, 4, 1, INK);
+    }
+
+    px(cx - 14, base - 13, 2, 1, INK_SOFT);
+    px(cx + 12, base - 13, 2, 1, INK_SOFT);
+
+    if (state.joy > 0.85 && !asleep) drawHeart(cx + 16, base - 26);
+  }
+
+  function drawHeart(x, y) {
+    px(x, y, 2, 1, INK);
+    px(x + 3, y, 2, 1, INK);
+    px(x - 1, y + 1, 7, 1, INK);
+    px(x, y + 2, 5, 1, INK);
+    px(x + 1, y + 3, 3, 1, INK);
+    px(x + 2, y + 4, 1, 1, INK);
+  }
+
+  function drawHearts() {
+    for (const h of state.hearts) {
+      g.globalAlpha = Math.max(0, Math.min(1, h.life));
+      drawHeart(Math.round(h.x), Math.round(h.y));
+    }
+    g.globalAlpha = 1;
+  }
+
+  function drawSleep() {
+    if (!sleeping()) return;
+    const zs = [[46, 12], [51, 6], [56, 1]];
+    zs.forEach(([x, y], i) => {
+      g.globalAlpha = 0.35 + i * 0.2;
+      px(x, y, 5, 1, INK);
+      px(x, y + 1, 1, 1, INK);
+      px(x + 3, y + 2, 2, 1, INK);
+      px(x, y + 3, 5, 1, INK);
+    });
+    g.globalAlpha = 1;
+  }
+
+  function paintMeters() {
+    const fOn = Math.round(state.food * SEGS);
+    const jOn = Math.round(state.joy * SEGS);
+    [...foodEl.children].forEach((el, i) => el.classList.toggle('on', i < fOn));
+    [...joyEl.children].forEach((el, i) => el.classList.toggle('on', i < jOn));
+  }
+
+  function paintStatus() {
+    const f = state.food, j = state.joy;
+    let msg;
+    if (f < 0.2 && j < 0.2) msg = '<b>Desperate.</b> It has eaten the corner of the screen and is now looking at you.';
+    else if (f < 0.2) msg = '<b>Starving.</b> Staring directly into your soul. Feed it.';
+    else if (j < 0.2) msg = '<b>Bored stiff.</b> Flat mouth. Long sigh. Play with it.';
+    else if (f > 0.9 && j > 0.9) msg = '<b>Thriving.</b> Slightly too pleased with itself.';
+    else if (j > 0.6) msg = '<b>Content.</b> Wiggling. Would accept more snacks anyway.';
+    else msg = '<b>Fine.</b> Sitting there. Being a cat about it.';
+    statusEl.innerHTML = msg;
+  }
+
+  function repaint() { drawScene(); paintMeters(); paintStatus(); }
+
+  function popHearts(n) {
+    for (let i = 0; i < n; i++) {
+      state.hearts.push({ x: 18 + Math.random() * 30, y: 26 + Math.random() * 10, life: 1, vy: 0.9 });
+    }
+  }
+
+  function feed() {
+    state.food = Math.min(1, state.food + 0.22);
+    state.joy = Math.min(1, state.joy + 0.05);
+    popHearts(3);
+    repaint();
+  }
+
+  function play() {
+    state.joy = Math.min(1, state.joy + 0.24);
+    state.food = Math.max(0, state.food - 0.05);
+    popHearts(5);
+    repaint();
+  }
+
+  document.getElementById('feed').addEventListener('click', feed);
+  document.getElementById('play').addEventListener('click', play);
+
+  setInterval(function () {
+    state.t++;
+    state.food = Math.max(0, state.food - 0.0022);
+    state.joy = Math.max(0, state.joy - 0.0030);
+
+    if (state.t % 7 === 0) {
+      state.blinking = true;
+      setTimeout(() => { state.blinking = false; }, 140);
+    }
+
+    state.hearts.forEach(h => { h.y -= h.vy; h.life -= 0.022; });
+    state.hearts = state.hearts.filter(h => h.life > 0);
+
+    repaint();
+  }, 320);
+
+  repaint();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bluth's Original Frozen Banana</title>
+<style>
+*{margin:0;box-sizing:border-box}
+body{background:#0f0d09;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+padding:22px 16px;display:flex;justify-content:center}
+.card{width:100%;max-width:400px;position:relative}
+.awning{position:relative;display:flex;height:28px;margin:0 -12px;z-index:2;
+border:3px solid #1b1710;border-bottom:0;border-radius:4px 4px 0 0;overflow:hidden}
+.awning i{flex:1;background:#FBF5E9;height:100%}
+.awning i:nth-child(even){background:#1b1710}
+.awning:after{content:"";position:absolute;left:0;right:0;bottom:-9px;height:12px;
+background:radial-gradient(circle at 10px -2px,#1b1710 9px,transparent 10px) repeat-x;
+background-size:20px 12px;opacity:.85}
+.stand{position:relative;background:linear-gradient(168deg,#FFD84D,#F7B912 55%,#DC9800);
+border:4px solid #1b1710;border-radius:6px 6px 20px 20px;padding:16px 16px 14px;
+box-shadow:0 22px 50px rgba(0,0,0,.55), inset 0 0 0 2px rgba(255,255,255,.22);z-index:1}
+.ban{position:absolute;top:-8px;right:8px;width:62px;transform:rotate(16deg);
+filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));z-index:3}
+.ban.b2{right:52px;width:44px;top:4px;transform:rotate(-12deg);opacity:.9}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.kicker{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:#2b2212;font-weight:800}
+h1{font-size:30px;line-height:.94;letter-spacing:-.035em;color:#1b1710;margin:3px 0 0;
+font-weight:900;text-transform:uppercase;text-shadow:2px 2px 0 rgba(255,255,255,.35)}
+.price{flex:0 0 auto;background:#1b1710;color:#FFD84D;border-radius:50%;
+width:52px;height:52px;display:flex;align-items:center;justify-content:center;
+font-weight:900;font-size:19px;transform:rotate(9deg);border:2px solid #FFD84D;
+box-shadow:0 4px 0 rgba(0,0,0,.3)}
+.tag{font-size:11px;color:#3a2f1c;margin:7px 0 12px;font-weight:600}
+.bubble{background:#1b1710;border-radius:14px;padding:15px 15px 16px;min-height:110px;
+display:flex;flex-direction:column;justify-content:center;gap:7px;
+box-shadow:inset 0 2px 0 rgba(255,255,255,.08)}
+.show{font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:#FFD84D;font-weight:800}
+.line{font-size:17px;line-height:1.32;color:#FBF5E9;font-weight:600}
+.line.big{font-size:15px}
+button{width:100%;margin-top:14px;appearance:none;border:3px solid #1b1710;border-radius:12px;
+padding:13px;font-size:14px;font-weight:900;letter-spacing:.02em;text-transform:uppercase;
+background:#FBF5E9;color:#1b1710;cursor:pointer;font-family:inherit;
+box-shadow:0 5px 0 #1b1710;transition:transform .1s,box-shadow .1s}
+button:active{transform:translateY(4px);box-shadow:0 1px 0 #1b1710}
+.count{text-align:center;font-size:10px;color:#4a3c22;margin-top:10px;font-weight:700;
+letter-spacing:.06em;text-transform:uppercase}
+.pop{animation:pop .3s cubic-bezier(.2,1.5,.5,1)}
+@keyframes pop{0%{transform:scale(.94) rotate(-.6deg);opacity:.3}100%{transform:scale(1);opacity:1}}
+</style></head><body>
+<div class="card">
+  <div class="awning"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <svg class="ban" viewBox="0 0 90 140" aria-hidden="true">
+<path d="M26 12 C12 42 16 80 36 104 C52 124 74 128 86 118 C92 112 88 102 80 105
+C58 110 42 94 35 70 C29 48 30 24 40 10 C44 2 30 2 26 12 Z"
+fill="#FFD446" stroke="#1b1710" stroke-width="5" stroke-linejoin="round"/>
+<path d="M33 22 C28 48 33 78 50 98" fill="none" stroke="#1b1710" stroke-width="3.5"
+stroke-linecap="round" opacity=".4"/>
+<path d="M44 24 C41 48 45 74 58 92" fill="none" stroke="#1b1710" stroke-width="2.6"
+stroke-linecap="round" opacity=".25"/>
+<path d="M18 12 C22 4 30 2 36 6" fill="none" stroke="#1b1710" stroke-width="6" stroke-linecap="round"/>
+</svg><svg class="ban b2" viewBox="0 0 90 140" aria-hidden="true">
+<path d="M26 12 C12 42 16 80 36 104 C52 124 74 128 86 118 C92 112 88 102 80 105
+C58 110 42 94 35 70 C29 48 30 24 40 10 C44 2 30 2 26 12 Z"
+fill="#FFD446" stroke="#1b1710" stroke-width="5" stroke-linejoin="round"/>
+<path d="M33 22 C28 48 33 78 50 98" fill="none" stroke="#1b1710" stroke-width="3.5"
+stroke-linecap="round" opacity=".4"/>
+<path d="M44 24 C41 48 45 74 58 92" fill="none" stroke="#1b1710" stroke-width="2.6"
+stroke-linecap="round" opacity=".25"/>
+<path d="M18 12 C22 4 30 2 36 6" fill="none" stroke="#1b1710" stroke-width="6" stroke-linecap="round"/>
+</svg>
+  <div class="stand">
+    <div class="head">
+      <div>
+        <div class="kicker">Bluth's Original &middot; Frozen</div>
+        <h1>The Banana<br>Stand</h1>
+      </div>
+      <div class="price">$1</div>
+    </div>
+    <div class="tag">There is money in here. That is the whole point.</div>
+    <div class="bubble" id="bubble">
+      <div class="show" id="show">Arrested Development</div>
+      <div class="line" id="line">There's always money in the banana stand.</div>
+    </div>
+    <button id="go">Dispense a banana</button>
+    <div class="count" id="count">bananas dispensed &middot; 1</div>
+  </div>
+</div>
+<script>
+const Q = [{"show": "Arrested Development", "line": "There's always money in the banana stand."}, {"show": "Arrested Development", "line": "No touching!"}, {"show": "Arrested Development", "line": "I've made a huge mistake."}, {"show": "Arrested Development", "line": "I just blue myself."}, {"show": "Arrested Development", "line": "Solid as a rock!"}, {"show": "Arrested Development", "line": "And that's why you always leave a note."}, {"show": "BoJack Horseman", "line": "That's too much, man!"}, {"show": "BoJack Horseman", "line": "Every day it gets a little easier. But you gotta do it every day."}, {"show": "BoJack Horseman", "line": "What are YOU doing here?"}, {"show": "BoJack Horseman", "line": "A horse is a horse, of course, of course."}, {"show": "BoJack Horseman", "line": "I need a drink."}];
+let n = 1, last = 0;
+const bubble = document.getElementById('bubble');
+document.getElementById('go').addEventListener('click', () => {
+  let i;
+  do { i = Math.floor(Math.random() * Q.length); } while (i === last && Q.length > 1);
+  last = i;
+  document.getElementById('show').textContent = Q[i].show;
+  const l = document.getElementById('line');
+  l.textContent = Q[i].line;
+  l.classList.toggle('big', Q[i].line.length > 66);
+  bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop');
+  n++;
+  document.getElementById('count').textContent = 'bananas dispensed · ' + n;
+});
+</script>
+</body></html>
