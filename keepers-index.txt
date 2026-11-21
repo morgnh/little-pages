@@ -1,0 +1,474 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>The Keepers Index</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a 90s personal homepage inside a Windows 95 browser window on a teal desktop.
+   Classic gray scheme, Times serif, all lowercase. One deliberate look, so every color is set explicitly (no dark variant). */
+:root {
+  --desk: #008080;
+  --face: #c0c0c0;
+  --hi: #ffffff;
+  --lite: #dfdfdf;
+  --shade: #808080;
+  --dark: #000000;
+  --title1: #000080;
+  --title2: #1084d0;
+  --page: #c0c0c0;
+  --ink: #000000;
+  --muted: #303030;
+  --link: #0000ee;
+  --visited: #551a8b;
+  --box: #dcdcdc;
+  --serif: "Times New Roman", Times, Georgia, serif;
+  --ui: Tahoma, Verdana, "Segoe UI", sans-serif;
+  --mono: "Courier New", Courier, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--desk); color: var(--ink);
+  font-family: var(--serif); font-size: 17px; line-height: 1.45;
+  text-transform: lowercase;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+}
+a { color: var(--link); }
+a:visited { color: var(--visited); }
+a:focus-visible, button:focus-visible { outline: 2px dotted var(--ink); outline-offset: 2px; }
+
+.bevel-out { box-shadow: inset -1px -1px var(--dark), inset 1px 1px var(--hi), inset -2px -2px var(--shade), inset 2px 2px var(--lite); }
+.bevel-in { box-shadow: inset 1px 1px var(--shade), inset 2px 2px var(--dark), inset -1px -1px var(--hi), inset -2px -2px var(--lite); }
+
+/* Browser window */
+.win { max-width: 980px; margin: 0 auto; background: var(--face); padding: 3px;
+  border: 2px solid; border-color: var(--lite) var(--dark) var(--dark) var(--lite);
+  box-shadow: inset 1px 1px var(--hi), inset -1px -1px var(--shade), 6px 6px 0 rgba(0,0,0,.3); }
+.title { display: flex; align-items: center; gap: 6px; padding: 3px 4px; background: linear-gradient(90deg, var(--title1), var(--title2)); color: #fff; font: 700 .82rem var(--ui); }
+.title b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.title > svg { width: 16px; height: 16px; flex: none; }
+.ctrls { display: flex; gap: 2px; flex: none; }
+.ctrls i { width: 18px; height: 16px; display: grid; place-items: center; background: var(--face); color: var(--ink); font: 700 .7rem/1 var(--ui); font-style: normal; }
+.menu { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 4px 6px; font: .82rem var(--ui); color: var(--ink); }
+.tools { display: flex; flex-wrap: wrap; gap: 2px; padding: 4px; border-top: 1px solid var(--shade); box-shadow: inset 0 1px 0 var(--hi); }
+.tool { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 56px; padding: 4px 6px; font: .72rem var(--ui); color: var(--ink); }
+.tool svg { width: 22px; height: 22px; }
+@media (max-width: 560px) { .tool span { display: none; } .tool { min-width: 0; } }
+.addr { display: flex; align-items: center; gap: 6px; padding: 4px 6px 6px; font: .8rem var(--ui); color: var(--ink); }
+.field { flex: 1; min-width: 0; padding: 3px 6px; background: #fff; color: var(--ink); font: .8rem var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.page { margin: 0 2px 4px; padding: 18px; background: var(--page); color: var(--ink); display: flex; flex-direction: column; gap: 20px; }
+
+/* Picture banner, one panel per drawer */
+.banner { background: #000; color: #fff; padding: 8px; }
+.banner-top { text-align: center; padding: 6px 0 10px; font: 700 clamp(.95rem, 3vw, 1.4rem) var(--serif); letter-spacing: .28em; }
+.panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 3px; }
+.panel { min-height: 104px; padding: 12px 4px 8px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 6px;
+  text-align: center; text-decoration: none; background: var(--p); font: 700 .9rem/1.15 var(--serif); letter-spacing: .03em; }
+.panel, .panel:visited { color: #fff; }
+.panel svg { width: 44px; height: 44px; }
+.panel:hover { outline: 3px solid #fff35c; outline-offset: -3px; }
+.banner-bot { margin-top: 8px; padding: 4px; text-align: center; background: #111; color: #f1d27a; border-block: 1px solid #f1d27a; font: 700 .85rem var(--serif); letter-spacing: .2em; }
+
+/* Welcome pop-up */
+.dlg { align-self: center; width: min(100%, 420px); background: var(--face); color: var(--ink); padding: 3px; font: .85rem/1.4 var(--ui);
+  border: 2px solid; border-color: var(--lite) var(--dark) var(--dark) var(--lite); box-shadow: inset 1px 1px var(--hi), inset -1px -1px var(--shade), 5px 5px 0 rgba(0,0,0,.3); }
+.dlg-in { display: flex; gap: 12px; align-items: center; padding: 14px 12px 8px; }
+.dlg-in svg { width: 32px; height: 32px; flex: none; }
+.dlg-in p { margin: 0; }
+.dlg-btns { display: flex; justify-content: center; padding: 6px 0 10px; }
+.btn { font: .85rem var(--ui); text-transform: lowercase; color: var(--ink); background: var(--face); border: 0; padding: 5px 18px; min-width: 76px; cursor: pointer; }
+.btn:active { box-shadow: inset 1px 1px var(--dark), inset -1px -1px var(--hi), inset 2px 2px var(--shade), inset -2px -2px var(--lite); }
+
+/* Two columns */
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 22px; align-items: start; }
+@media (max-width: 760px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+.main { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.drawer { scroll-margin-top: 16px; padding-top: 14px; border-top: 2px groove var(--hi); }
+.drawer:first-child { padding-top: 0; border-top: 0; }
+.drawer h2 { margin: 0 0 2px; font: 700 1.35rem/1.2 var(--serif); display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.drawer h2 .count { font: 400 .95rem var(--mono); color: var(--muted); }
+.drawer dl { margin: 0; }
+.drawer dt { margin-top: 12px; font-weight: 700; font-size: 1.05rem; }
+.drawer dd { margin: 3px 0 0 24px; }
+.drawer dd p { margin: 0; color: var(--muted); }
+.links { display: flex; flex-wrap: wrap; gap: 2px 16px; margin-top: 4px; font-weight: 700; }
+.meta { margin-top: 4px; font: .8rem var(--mono); color: var(--muted); }
+.new { display: inline-block; margin-left: 8px; padding: 1px 5px; vertical-align: middle; background: #ff1a1a; color: #fff35c; font: 700 .7rem var(--mono); }
+
+/* Sidebar */
+.side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.sbox { background: var(--box); color: var(--ink); border: 2px solid var(--dark); }
+.sbox-t { padding: 4px 8px; background: var(--title1); color: #fff; font: 700 1rem var(--serif); letter-spacing: .04em; }
+.sbox-in { padding: 10px; font-size: .95rem; }
+.sbox-in p { margin: 6px 0 0; text-align: center; }
+.odo { display: flex; gap: 3px; justify-content: center; }
+.odo b { width: 24px; height: 32px; display: grid; place-items: center; border: 1px solid #000; color: #ffe14d; font: 700 1.2rem var(--mono);
+  background: linear-gradient(#5a1fb5, #b04cff 46%, #3a0e8a 54%, #2d0a6b); }
+.chans { display: flex; flex-direction: column; gap: 6px; }
+.chan { display: block; padding: 6px 10px; border: 2px solid #000; text-decoration: none; text-shadow: 1px 1px 0 #000;
+  font: italic 700 1.05rem var(--serif); background: linear-gradient(90deg, var(--c1), var(--c2)); }
+.chan, .chan:visited { color: #fff; }
+.chan:hover { outline: 2px solid #fff35c; }
+.ring { text-align: center; font-weight: 700; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.b88 { width: 88px; height: 31px; display: inline-grid; place-items: center; text-align: center; border: 1px solid #000; font: 700 .62rem/1.1 var(--mono); }
+.b88.a { background: #000; color: #7dff6a; }
+.b88.b { background: #fff35c; color: #d0141e; }
+.b88.c { background: #000080; color: #fff; }
+.b88.d { background: #ff5fa2; color: #fff; }
+
+.status { display: flex; gap: 3px; padding: 2px; font: .76rem var(--ui); color: var(--ink); }
+.status span { padding: 2px 6px; box-shadow: inset 1px 1px var(--shade), inset -1px -1px var(--hi); white-space: nowrap; }
+.status span:first-child { flex: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .new { animation: blink 1.2s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="g-sea" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#7cc0ec"/><stop offset="1" stop-color="#1f5f9e"/></radialGradient>
+    <linearGradient id="g-disc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f6fa"/><stop offset=".35" stop-color="#c7e3f6"/><stop offset=".55" stop-color="#f6c6e8"/><stop offset=".75" stop-color="#d9f2c9"/><stop offset="1" stop-color="#b9bcc8"/></linearGradient>
+    <symbol id="i-globe" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="44" fill="url(#g-sea)"/>
+      <path d="M22 34c8-8 20-10 26-4 4 5-2 10 4 15s14 2 14 10-10 10-16 8-8 8-16 6-6-12-12-14-10-12 0-21z" fill="#6fae4a"/>
+      <path d="M62 18c8 0 18 6 22 14-6 2-12-2-16 2s-10-2-10-6 0-10 4-10z" fill="#6fae4a"/>
+      <path d="M64 70c6-2 12 2 14 6-4 6-10 10-16 10 0-6-4-14 2-16z" fill="#6fae4a"/>
+    </symbol>
+    <symbol id="i-disc" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="44" fill="url(#g-disc)" stroke="#9a9db0" stroke-width="1.5"/>
+      <circle cx="50" cy="50" r="15" fill="#e9ebf1" stroke="#9a9db0" stroke-width="1.5"/>
+      <circle cx="50" cy="50" r="6" fill="#ffffff" stroke="#9a9db0" stroke-width="1.5"/>
+    </symbol>
+    <symbol id="i-pencil" viewBox="0 0 100 100">
+      <path d="M22 70l44-44 12 12-44 44H22z" fill="#f2c230"/>
+      <path d="M66 26l8-8 12 12-8 8z" fill="#ff8fb1"/>
+      <path d="M22 70v12h12z" fill="#f4dcb0"/><path d="M22 78v4h4z" fill="#333"/>
+    </symbol>
+    <symbol id="i-house" viewBox="0 0 100 100">
+      <path d="M24 48v38h52V48L50 26z" fill="#f2d16b"/>
+      <path d="M12 52L50 18l38 34" fill="none" stroke="#c8243b" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+      <rect x="42" y="62" width="16" height="24" fill="#8a3b1c"/>
+      <rect x="28" y="56" width="10" height="10" fill="#7cc0ec"/><rect x="62" y="56" width="10" height="10" fill="#7cc0ec"/>
+    </symbol>
+    <symbol id="i-star" viewBox="0 0 100 100">
+      <path d="M50 10l11 26 28 2-21 18 7 28-25-15-25 15 7-28-21-18 28-2z" fill="#fff35c" stroke="#8a5a00" stroke-width="3" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-beetle" viewBox="0 0 100 100">
+      <g stroke="#2a1c10" stroke-width="3" stroke-linecap="round" fill="none"><path d="M34 42l-16-8M32 56l-18 2M36 70l-14 14M66 42l16-8M68 56l18 2M64 70l14 14M44 18l-8-10M56 18l8-10"/></g>
+      <circle cx="50" cy="26" r="9" fill="#2a1c10"/>
+      <ellipse cx="50" cy="58" rx="22" ry="28" fill="#1f8a6d"/>
+      <path d="M50 32v54" stroke="#0e4a3a" stroke-width="2.5"/>
+    </symbol>
+    <symbol id="i-plane" viewBox="0 0 100 100">
+      <path d="M8 54l84-34-32 64-12-26z" fill="#ffffff"/><path d="M48 58l44-38-40 44z" fill="#c9d6ea"/>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 100 100">
+      <path d="M10 28h30l8 8h42v48H10z" fill="#f2d16b" stroke="#8a5a00" stroke-width="3"/>
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="14" fill="#1a5fd0" stroke="#ffffff" stroke-width="2"/>
+      <rect x="14.5" y="13" width="3" height="11" fill="#ffffff"/><circle cx="16" cy="9" r="2" fill="#ffffff"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="win">
+  <div class="title">
+    <svg aria-hidden="true"><use href="#i-globe"/></svg>
+    <b>The Keepers Index - Web Browser</b>
+    <span class="ctrls" aria-hidden="true"><i class="bevel-out">_</i><i class="bevel-out">&#9633;</i><i class="bevel-out">&times;</i></span>
+  </div>
+  <div class="menu" aria-hidden="true"><span><u>f</u>ile</span><span><u>e</u>dit</span><span><u>v</u>iew</span><span>f<u>a</u>vorites</span><span><u>h</u>elp</span></div>
+  <div class="tools" aria-hidden="true">
+    <span class="tool"><svg viewBox="0 0 24 24"><path d="M14 5l-8 7 8 7v-4h6V9h-6z" fill="#2e7d32"/></svg><span>back</span></span>
+    <span class="tool"><svg viewBox="0 0 24 24"><path d="M10 5l8 7-8 7v-4H4V9h6z" fill="#2e7d32"/></svg><span>forward</span></span>
+    <span class="tool"><svg><use href="#i-house"/></svg><span>home</span></span>
+    <span class="tool"><svg viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 0 8 8h-3a5 5 0 1 1-5-5v3l5-4.5L12 1z" fill="#1a5fd0"/></svg><span>reload</span></span>
+    <span class="tool"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6" fill="#bfe3ff" stroke="#333" stroke-width="2.5"/><path d="M14.5 14.5l6 6" stroke="#8a5a2b" stroke-width="3.5" stroke-linecap="round"/></svg><span>find</span></span>
+    <span class="tool"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="7" fill="#fff" stroke="#333"/><rect x="3" y="9" width="18" height="9" fill="#9a9a9a" stroke="#333"/><rect x="6" y="15" width="12" height="6" fill="#fff" stroke="#333"/></svg><span>print</span></span>
+  </div>
+  <div class="addr" aria-hidden="true"><span>address:</span><span class="field bevel-in">http://members.keepers.net/~keeper/index.html</span></div>
+
+  <div class="page bevel-in">
+    <div class="banner">
+      <div class="banner-top">welcome to the keepers index</div>
+      <nav class="panels" id="panels" aria-label="Drawers"></nav>
+      <div class="banner-bot">&#10022; a little homepage of things worth keeping &#10022;</div>
+    </div>
+
+    <div class="dlg" id="dlg">
+      <div class="title"><b>welcome!!</b><span class="ctrls" aria-hidden="true"><i class="bevel-out">&times;</i></span></div>
+      <div class="dlg-in"><svg aria-hidden="true"><use href="#i-info"/></svg><p id="dlg-text">Hi! This is where the Claude artifacts and files worth holding onto live, from Claude Duet and from chat, sorted into drawers by topic. Click a title to open it.</p></div>
+      <div class="dlg-btns"><button type="button" class="btn bevel-out" id="dlg-ok">ok</button></div>
+    </div>
+
+    <div class="cols">
+      <main class="main" id="catalog"></main>
+
+      <aside class="side">
+        <div class="sbox"><div class="sbox-t">cards filed</div><div class="sbox-in">
+          <div class="odo" id="counter" aria-label="Number of cards filed"></div>
+          <p id="tidied"></p>
+        </div></div>
+        <div class="sbox"><div class="sbox-t">channels</div><div class="sbox-in"><nav class="chans" id="chans" aria-label="Jump to a drawer"></nav></div></div>
+        <div class="sbox"><div class="sbox-t">webring</div><div class="sbox-in ring">&laquo; prev &middot; keepers ring &middot; next &raquo;</div></div>
+        <div class="badges" aria-hidden="true">
+          <span class="b88 a">web<br>revival</span>
+          <span class="b88 b">made with<br>claude</span>
+          <span class="b88 c">best viewed on<br>any device</span>
+          <span class="b88 d">digital<br>garden</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="status" aria-hidden="true"><span>done</span><span id="status-date"></span></div>
+</div>
+
+<!--
+  KEEPERS DATA. To add an entry, append one object to "entries".
+  - group: must match a key in "groups" (add a new group there with a label, code and tape color: sage, lilac, butter or blush).
+  - added: YYYY-MM-DD, the day it was filed here.
+  - kind: one short word (guide, plan, list, notes, page...).
+  - url: the artifact link. For one card with several links, use "links": [{"label": "...", "url": "..."}] instead.
+  Bump "updated" to the day of the change. Cards render in the order listed.
+  (The page's look picks each drawer's banner color and picture by itself; "tape" is kept for compatibility.)
+-->
+<script type="application/json" id="keepers-data">
+{
+  "updated": "2026-11-21",
+  "groups": {
+    "hermes": {
+      "label": "Learning Hermes",
+      "code": "HER",
+      "tape": "sage"
+    },
+    "ai": {
+      "label": "Learning AI",
+      "code": "AIL",
+      "tape": "blush"
+    },
+    "prompting": {
+      "label": "Prompting",
+      "code": "PRM",
+      "tape": "lilac"
+    },
+    "life": {
+      "label": "Life & home",
+      "code": "LIF",
+      "tape": "sage"
+    },
+    "fun": {
+      "label": "Free time",
+      "code": "FUN",
+      "tape": "butter"
+    },
+    "design": {
+      "label": "Design",
+      "code": "DSN",
+      "tape": "lilac"
+    },
+    "trips": {
+      "label": "Trips",
+      "code": "TRP",
+      "tape": "butter"
+    }
+  },
+  "entries": [
+    {
+      "group": "hermes",
+      "title": "Hermes starter guide",
+      "kind": "guide",
+      "note": "Plain-words meanings for the Hermes terms you keep running into, why it lives on your laptop for now, four one-time safety settings, and three small starter projects.",
+      "url": "https://claude.ai/artifact/NjSKzGFRSCAWMg6JSYwdvW",
+      "added": "2026-11-19"
+    },
+    {
+      "group": "hermes",
+      "title": "Laptop cleanup plan with Hermes Agent",
+      "kind": "plan",
+      "note": "Five short phases over about four weeks. Hermes only looks and moves things into a holding folder, you do any deleting by hand, and iCloud Drive comes last.",
+      "url": "https://claude.ai/artifact/1MmafbSsWMtFB9UAbpUbMF",
+      "added": "2026-11-19"
+    },
+    {
+      "group": "hermes",
+      "title": "Hermes learning path",
+      "kind": "path",
+      "note": "The seven chunks in order, from how agents work to a research curriculum, with where you started, a month plan, the usual sticking points and what to try next at the laptop.",
+      "url": "https://claude.ai/artifact/Vgp2V6FVKcekAVCpQGJBzr",
+      "added": "2026-11-19"
+    },
+    {
+      "group": "hermes",
+      "title": "Brain Snacks: Learning Drip Ideas",
+      "kind": "sheet",
+      "note": "Your Google Sheet of 12 one-lesson-a-day topics for your Hermes cloud agent, from pigments to medieval manuscripts, with a column to tick once you've tried each.",
+      "url": "https://docs.google.com/spreadsheets/d/1E1UwYpb6KpGgcH4eHyXDUN56tnVQefjEIlMxfGwL0yc/edit",
+      "added": "2026-11-21"
+    },
+    {
+      "group": "ai",
+      "title": "Six AI paths field guide",
+      "kind": "guide",
+      "note": "Tina Huang's AI roadmap video laid out: the starter pack, then six paths from Strategist to Machinist, each with courses, costs, time and what the video left out.",
+      "url": "https://claude.ai/artifact/Rdvhy9b9Eib4WGW8C9RPx3",
+      "added": "2026-11-19"
+    },
+    {
+      "group": "prompting",
+      "title": "Prompting notebook: source list",
+      "kind": "list",
+      "note": "20 checked sources for your NotebookLM notebook: the official Anthropic, OpenAI and Google guides, plus practitioners and test results that cut through prompt hype.",
+      "url": "https://claude.ai/artifact/C4PWe5BLieY6Qt1y7yJur4",
+      "added": "2026-11-19"
+    },
+    {
+      "group": "life",
+      "title": "Life hub",
+      "kind": "hub",
+      "note": "Your home base: Today, people and pets, dates and gifts, house, food, work, hobbies, rabbit holes and more, with lists that save as you go.",
+      "url": "https://claude.ai/artifact/ByGTQQ1a8Z8bFb77ZGSxpz",
+      "added": "2026-11-19"
+    },
+    {
+      "group": "fun",
+      "title": "Afternoon notebook ideas",
+      "kind": "ideas",
+      "note": "25 NotebookLM projects for a free afternoon at home, sorted by theme, each with what you'll end up with and a box to tick once you've tried it.",
+      "url": "https://claude.ai/artifact/CAsKTan4kPDEWHzRzdTmM1",
+      "added": "2026-11-19"
+    },
+    {
+      "group": "design",
+      "title": "bug & birdy brand concept",
+      "kind": "concept",
+      "note": "Draft v1 brand identity for the filet crochet shop: lowercase serif wordmark with a custom ampersand, oxblood and cream palette, fonts, voice, Instagram plan and a build checklist.",
+      "url": "https://claude.ai/artifact/TaumPVKt6KZQDXio4Gyx5X",
+      "added": "2026-11-19"
+    },
+    {
+      "group": "trips",
+      "title": "Brooklyn Thanksgiving packing list",
+      "kind": "list",
+      "note": "Carry-on checklist for Nov 25 to 27, with the weather outlook, dinner and travel-day items, and what to sort out for the pets before you leave.",
+      "url": "https://claude.ai/artifact/QiKscf1FKpkg8QCjtujZyr",
+      "added": "2026-11-19"
+    }
+  ]
+}
+</script>
+
+<script>
+(function () {
+  var dlg = document.getElementById("dlg");
+  document.getElementById("dlg-ok").addEventListener("click", function () { dlg.hidden = true; });
+
+  var data;
+  try { data = JSON.parse(document.getElementById("keepers-data").textContent); }
+  catch (e) { document.getElementById("catalog").textContent = "The list couldn't be read."; return; }
+
+  // Banner panel colors and channel gradients, used in drawer order; pictures for known drawers, a folder for new ones.
+  var palette = [
+    { p: "#1b1f6b", c1: "#1b1f6b", c2: "#4a5bd8" },
+    { p: "#7b3fa0", c1: "#5b2a86", c2: "#b04cff" },
+    { p: "#0f7f8f", c1: "#0b6a6a", c2: "#21b3a8" },
+    { p: "#2f6fd8", c1: "#1d4fa8", c2: "#4fa3f0" },
+    { p: "#d9661f", c1: "#b8470f", c2: "#f2a33a" },
+    { p: "#c22f5d", c1: "#9c1f4a", c2: "#ff5fa2" },
+    { p: "#2a8a7e", c1: "#1d7a6f", c2: "#5cc28a" },
+    { p: "#6b5b2a", c1: "#5a4a1c", c2: "#c9a24a" }
+  ];
+  var pictures = { hermes: "i-disc", ai: "i-globe", prompting: "i-pencil", life: "i-house", fun: "i-star", design: "i-beetle", trips: "i-plane" };
+  var NS = "http://www.w3.org/2000/svg";
+
+  function fmt(iso) {
+    var p = String(iso || "").split("-");
+    if (p.length !== 3) return iso || "";
+    return p[1] + "." + p[2] + "." + p[0].slice(2);
+  }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function slug(s) { return "drawer-" + String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-"); }
+  function pic(key) {
+    var svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("aria-hidden", "true");
+    var use = document.createElementNS(NS, "use");
+    use.setAttribute("href", "#" + (pictures[key] || "i-folder"));
+    svg.appendChild(use);
+    return svg;
+  }
+  function openLink(text, url) {
+    var a = el("a", null, text); a.href = url; a.target = "_blank"; a.rel = "noopener"; return a;
+  }
+
+  var order = [], byGroup = {};
+  (data.entries || []).forEach(function (e) {
+    if (!byGroup[e.group]) { byGroup[e.group] = []; order.push(e.group); }
+    byGroup[e.group].push(e);
+  });
+
+  var panels = document.getElementById("panels");
+  var chans = document.getElementById("chans");
+  var catalog = document.getElementById("catalog");
+
+  order.forEach(function (key, gi) {
+    var g = (data.groups || {})[key] || { label: key, code: key.slice(0, 3).toUpperCase() };
+    var c = palette[gi % palette.length];
+    var items = byGroup[key];
+    var href = "#" + slug(key);
+
+    var panel = el("a", "panel"); panel.href = href; panel.style.setProperty("--p", c.p);
+    panel.appendChild(pic(key)); panel.appendChild(el("span", null, g.label));
+    panels.appendChild(panel);
+
+    var chan = el("a", "chan", g.label); chan.href = href;
+    chan.style.setProperty("--c1", c.c1); chan.style.setProperty("--c2", c.c2);
+    chans.appendChild(chan);
+
+    var sec = el("section", "drawer"); sec.id = slug(key);
+    var h2 = el("h2", null, g.label); h2.appendChild(el("span", "count", "[" + items.length + "]"));
+    sec.appendChild(h2);
+    var dl = el("dl");
+    items.forEach(function (e, i) {
+      var links = Array.isArray(e.links) && e.links.length ? e.links : null;
+      var dt = el("dt");
+      if (links) dt.appendChild(document.createTextNode(e.title));
+      else dt.appendChild(openLink(e.title, e.url));
+      if (e.added === data.updated) dt.appendChild(el("span", "new", "new!"));
+      dl.appendChild(dt);
+
+      var dd = el("dd");
+      dd.appendChild(el("p", null, e.note));
+      if (links) {
+        var lk = el("div", "links");
+        links.forEach(function (l) { lk.appendChild(openLink("» " + l.label, l.url)); });
+        dd.appendChild(lk);
+      }
+      var bits = [(g.code || "") + "-" + String(i + 1).padStart(2, "0")];
+      if (e.kind) bits.push(e.kind);
+      bits.push("filed " + fmt(e.added));
+      dd.appendChild(el("div", "meta", bits.join(" · ")));
+      dl.appendChild(dd);
+    });
+    sec.appendChild(dl);
+    catalog.appendChild(sec);
+  });
+
+  var n = (data.entries || []).length;
+  var counter = document.getElementById("counter");
+  String(n).padStart(6, "0").split("").forEach(function (d) { counter.appendChild(el("b", null, d)); });
+  document.getElementById("tidied").textContent = "last updated " + fmt(data.updated);
+  document.getElementById("status-date").textContent = "last updated " + fmt(data.updated);
+})();
+</script>
+
+</body></html>
