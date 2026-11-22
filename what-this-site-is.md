@@ -11,10 +11,16 @@ live at https://morgnh.github.io/little-pages/ (GitHub Pages, `main` branch, roo
 | --- | --- |
 | `index.html` | the closet homepage: a 90s browser window with three drawers |
 | `keepers-index.html` | clippings worth keeping, also a browser window |
-| `widgets/index.html` | the widgets page: tab bar, three live widgets |
+| `cabinet.html` | **the cabinet**: every widget on its own plinth, all running live |
+| `widgets/index.html` | the widget shelf: tab bar, three live widgets |
 | `widgets/jellypet.html` | virtual pet, live canvas, feed and play. also its own page in the ring |
 | `widgets/tide-widget.html` | charleston harbor tide chart, baked-in snapshot. also its own page in the ring |
 | `widgets/banana-stand.html` | quote dispenser with a counter. also its own page in the ring |
+| `widgets/color-mixer.html` | two paints, ratio, the mix and its opposite. also an exhibit |
+| `widgets/badge-maker.html` | 88x31 badge maker, saves a png. also an exhibit |
+| `widgets/moon-phase.html` | tonight's moon plus 30 nights, computed locally. also an exhibit |
+| `widgets/pet-roll-call.html` | the three animals, with boop counters. also an exhibit |
+| `widgets/rabbit-hole.html` | one button, thirty topics. also an exhibit |
 | `widgets/README.md` | notes on the widgets and how to host them |
 
 ## house style
@@ -47,6 +53,20 @@ in the generator, rebuild, and re-upload, or edit the embedded copy by hand in t
 Each panel carries a fixed `data-w` / `data-h`, measured at the widget's real size, and the
 page scales the frame down when the window is narrow. If you change a widget's layout,
 re-measure and update those numbers.
+
+## how the cabinet works
+
+`cabinet.html` is a display case, not a list. Each exhibit is that widget loaded live in
+an iframe, so the thing on the shelf is the thing itself, buttons and all.
+
+Each entry in the `EXHIBITS` array carries the widget's **real measured size**. The frame
+takes that shape and the widget is scaled down, never reshaped. That matters: an earlier
+version guessed heights and cropped the bottoms off half the shelf. If you change a
+widget's layout, re-measure it and update its two numbers, or the case will letterbox
+or clip.
+
+`MAXH` caps how tall a portrait widget can get (jellypet is 380x930). Empty plinths are
+listed in `PLANNED` on purpose, same rule as the empty drawers.
 
 ## zones
 

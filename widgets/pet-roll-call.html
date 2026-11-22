@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pet roll call</title>
+<style>
+  :root{
+    --ink: #1b1b1b;
+    --line: #1b1b1b;
+    --panel: #fdf8ec;
+    --dim: #554e42;
+    --mono: "Courier New", "Courier", monospace;
+    --paper: #f7f1e1;
+    --cream: #f7f1e1;
+  }
+  html,body{background:#efe7d3;margin:0;padding:0}
+  body{font-family:var(--mono);color:var(--ink);font-size:14px;line-height:1.45;
+       padding:0}
+  .wrap{display:flex;flex-direction:column;gap:14px;max-width:960px;padding:14px 16px 20px}
+
+  .rainbow{height:10px;border:3px solid var(--line);
+    background:linear-gradient(to right,
+      #e22 0 16.6%, #f80 16.6% 33.3%, #fd0 33.3% 50%,
+      #3b3 50% 66.6%, #39c 66.6% 83.3%, #a4f 83.3% 100%)}
+  h1{font-size:25px;margin:0;text-transform:lowercase;letter-spacing:-1px;color:#111;
+     display:inline-block;background:#e8508a;padding:2px 9px 3px;align-self:flex-start;
+     border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
+  h1 .hrt{color:#111;font-size:19px}
+  .sub{margin:0;color:var(--dim);font-size:13px;max-width:58ch}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;
+         align-items:stretch}
+
+  .card{background:var(--panel);border:3px solid var(--line);box-shadow:6px 6px 0 var(--line);
+        display:flex;flex-direction:column}
+  .strip{display:flex;justify-content:space-between;align-items:center;
+         background:var(--acc);color:#111;border-bottom:3px solid var(--line);
+         padding:4px 8px;font-size:10px;letter-spacing:2px;text-transform:lowercase}
+  .strip b{font-size:12px;letter-spacing:1px}
+  .body{padding:11px 11px 12px;display:flex;flex-direction:column;gap:9px;flex:1}
+  h2{margin:0;font-size:22px;letter-spacing:-1px;text-transform:lowercase;line-height:1.1}
+  .art{background:var(--paper);border:3px solid var(--line);display:grid;place-items:center;
+       padding:6px}
+  .art svg{width:100%;max-width:140px;height:auto;display:block}
+  .fact{margin:0;font-size:13px;flex:1}
+  .fact q{quotes:'“' '”'}
+  .meta{margin:0;font-size:10px;letter-spacing:2px;text-transform:lowercase;color:var(--dim)}
+  .booprow{display:flex;align-items:center;gap:8px;margin-top:2px}
+  button.boop{font-family:var(--mono);font-size:11px;padding:5px 9px;cursor:pointer;
+    background:var(--panel);color:var(--ink);border:3px solid var(--line);
+    box-shadow:3px 3px 0 var(--line);text-transform:lowercase;letter-spacing:1px}
+  button.boop:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--line)}
+  button.boop:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+  .count{font-size:11px;color:var(--dim);letter-spacing:1px}
+  .card.hop{animation:hop .32s steps(4)}
+  @keyframes hop{0%{transform:translateY(0)}50%{transform:translateY(-7px)}100%{transform:translateY(0)}}
+  .foot{margin:0;font-size:11px;color:var(--dim);letter-spacing:1px;text-transform:lowercase}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="rainbow"></div>
+  <h1>pet roll call <span class="hrt">&#9829;</span></h1>
+  <p class="sub">everyone currently living here, with the one fact that explains them.</p>
+
+  <div class="cards">
+
+    <article class="card" data-pet="shelby" style="--acc:#e8508a">
+      <div class="strip"><b>01</b><span>dog</span></div>
+      <div class="body">
+        <h2>shelby</h2>
+        <div class="art">
+          <svg viewBox="0 0 120 120" role="img" aria-label="a doodled dog face with its tongue out">
+            <g fill="#f7f1e1" stroke="#1b1b1b" stroke-width="3.4" stroke-linejoin="round">
+              <path d="M36 40 C22 32 18 60 29 76 C35 84 43 80 42 68 C41 56 39 46 38 40 Z"/>
+              <path d="M84 40 C98 32 102 60 91 76 C85 84 77 80 78 68 C79 56 81 46 82 40 Z"/>
+              <ellipse cx="60" cy="58" rx="32" ry="29"/>
+            </g>
+            <circle cx="48" cy="53" r="3.8" fill="#1b1b1b"/>
+            <circle cx="72" cy="53" r="3.8" fill="#1b1b1b"/>
+            <path d="M60 62 l-6 -4 h12 z" fill="#1b1b1b"/>
+            <path d="M60 62 v7 M60 69 c-4 6 -11 5 -13 0 M60 69 c4 6 11 5 13 0"
+                  fill="none" stroke="#1b1b1b" stroke-width="3" stroke-linecap="round"/>
+            <path d="M55 73 c-2 9 7 12 9 4 c1 -4 -4 -7 -9 -4 z" fill="#e8508a"
+                  stroke="#1b1b1b" stroke-width="2.6" stroke-linejoin="round"/>
+            <g stroke="#e8508a" stroke-width="3.2" stroke-linecap="round">
+              <path d="M94 64 l5 -4"/><path d="M97 70 l6 0"/><path d="M94 76 l5 4"/>
+            </g>
+          </svg>
+        </div>
+        <p class="fact"><q>bites people in the butt so they'll chase her</q></p>
+        <p class="meta">role &middot; chief instigator</p>
+        <div class="booprow">
+          <button class="boop" type="button">boop</button>
+          <span class="count">0 boops</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-pet="velma" style="--acc:#2ec4b6">
+      <div class="strip"><b>02</b><span>cat</span></div>
+      <div class="body">
+        <h2>velma</h2>
+        <div class="art">
+          <svg viewBox="0 0 120 120" role="img" aria-label="a doodled cat lying down beside a water bowl">
+            <g fill="#f7f1e1" stroke="#1b1b1b" stroke-width="3.4" stroke-linejoin="round">
+              <path d="M16 74 C10 66 12 56 18 52"/>
+              <path d="M18 92 c0 -12 10 -18 22 -18 h20 c10 0 16 8 16 16 c0 6 -5 9 -12 9 H30 c-8 0 -12 -3 -12 -7 z"/>
+              <path d="M64 30 L62 12 L82 24 Z"/>
+              <path d="M100 30 L104 12 L86 24 Z"/>
+              <ellipse cx="78" cy="50" rx="24" ry="22"/>
+              <path d="M28 96 c0 -6 3 -9 8 -9 s8 3 8 9 z"/>
+            </g>
+            <g fill="none" stroke="#1b1b1b" stroke-width="3" stroke-linecap="round">
+              <path d="M67 47 q5 5 9 0"/>
+              <path d="M85 47 q5 5 9 0"/>
+            </g>
+            <path d="M78 54 l-4 4 h8 z" fill="#1b1b1b"/>
+            <path d="M78 60 q-3 3 -6 1" fill="none" stroke="#1b1b1b" stroke-width="2.6" stroke-linecap="round"/>
+            <g stroke="#1b1b1b" stroke-width="2.4" stroke-linecap="round">
+              <path d="M56 50 h-10"/><path d="M57 57 h-11"/>
+              <path d="M100 50 h10"/><path d="M99 57 h11"/>
+            </g>
+            <g fill="none" stroke="#1b1b1b" stroke-width="3.2" stroke-linejoin="round">
+              <path d="M74 80 h30 c0 15 -7 20 -15 20 s-15 -5 -15 -20 z" fill="#cfe9f2"/>
+              <ellipse cx="89" cy="80" rx="15" ry="4.6" fill="#8fd3e8"/>
+            </g>
+            <g fill="none" stroke="#e8508a" stroke-width="2.8" stroke-linecap="round">
+              <path d="M82 74 q4 -4 8 0"/><path d="M92 73 q4 -4 8 0"/>
+            </g>
+          </svg>
+        </div>
+        <p class="fact"><q>drinks water lying down</q></p>
+        <p class="meta">role &middot; horizontal hydrator</p>
+        <div class="booprow">
+          <button class="boop" type="button">boop</button>
+          <span class="count">0 boops</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-pet="elizabeth" style="--acc:#a4f">
+      <div class="strip"><b>03</b><span>cat</span></div>
+      <div class="body">
+        <h2>elizabeth</h2>
+        <div class="art">
+          <svg viewBox="0 0 120 120" role="img" aria-label="a doodled cat with wide eyes and fangs next to a churu tube">
+            <g fill="#f7f1e1" stroke="#1b1b1b" stroke-width="3.4" stroke-linejoin="round">
+              <path d="M26 36 L22 12 L44 24 Z"/>
+              <path d="M66 36 L70 12 L48 24 Z"/>
+              <ellipse cx="46" cy="52" rx="27" ry="25"/>
+            </g>
+            <g fill="#fff" stroke="#1b1b1b" stroke-width="3">
+              <circle cx="36" cy="48" r="6.5"/>
+              <circle cx="56" cy="48" r="6.5"/>
+            </g>
+            <circle cx="36" cy="48" r="2.4" fill="#1b1b1b"/>
+            <circle cx="56" cy="48" r="2.4" fill="#1b1b1b"/>
+            <path d="M46 58 l-4 3 h8 z" fill="#1b1b1b"/>
+            <path d="M38 66 q8 8 16 0" fill="none" stroke="#1b1b1b" stroke-width="3" stroke-linecap="round"/>
+            <path d="M40 67 l2 6 l3 -4 z M52 67 l-2 6 l-3 -4 z" fill="#1b1b1b"/>
+            <g stroke="#1b1b1b" stroke-width="2.4" stroke-linecap="round">
+              <path d="M18 50 h-9"/><path d="M19 57 h-9"/>
+              <path d="M74 50 h9"/><path d="M73 57 h9"/>
+            </g>
+            <g transform="translate(-9,-3) rotate(38 92 78)">
+              <rect x="78" y="70" width="30" height="15" rx="2" fill="#f7f1e1"
+                    stroke="#1b1b1b" stroke-width="3"/>
+              <rect x="100" y="70" width="8" height="15" rx="2" fill="#e8508a"
+                    stroke="#1b1b1b" stroke-width="3"/>
+              <path d="M78 70 h7 v15 h-7 z" fill="#cfe9f2" stroke="#1b1b1b" stroke-width="3"/>
+            </g>
+            <g fill="#e8508a" stroke="#1b1b1b" stroke-width="2.4">
+              <circle cx="70" cy="66" r="3.4"/>
+              <circle cx="60" cy="70" r="2.4"/>
+            </g>
+            <path d="M78 62 q-5 4 -9 3" fill="none" stroke="#e8508a"
+                  stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="fact"><q>turns into a feral cat for churu</q></p>
+        <p class="meta">role &middot; part-time goblin</p>
+        <div class="booprow">
+          <button class="boop" type="button">boop</button>
+          <span class="count">0 boops</span>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <p class="foot">the boop counts stick around in this browser. the facts came from morgan.</p>
+</div>
+
+<script>
+(function(){
+  var KEY="hermes-pet-boop-v1";
+  function load(){
+    try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return {}; }
+  }
+  function save(o){ try{ localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
+  var counts=load();
+
+  document.querySelectorAll(".card").forEach(function(card){
+    var pet=card.dataset.pet, out=card.querySelector(".count");
+    function paint(){ out.textContent=(counts[pet]||0)+" boop"+((counts[pet]||0)===1?"":"s"); }
+    paint();
+    card.querySelector(".boop").addEventListener("click",function(){
+      counts[pet]=(counts[pet]||0)+1; paint(); save(counts);
+      card.classList.remove("hop");
+      void card.offsetWidth;
+      card.classList.add("hop");
+    });
+  });
+  window.__boop={get:function(){return counts;}};
+})();
+</script>
+</body>
+</html>

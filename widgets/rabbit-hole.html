@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rabbit hole</title>
+<style>
+  :root{
+    --ink: #1b1b1b;
+    --line: #1b1b1b;
+    --panel: #fdf8ec;
+    --dim: #554e42;
+    --mono: "Courier New", "Courier", monospace;
+  }
+  html,body{background:#efe7d3;margin:0;padding:0}
+  body{font-family:var(--mono);color:var(--ink);font-size:14px;line-height:1.45;
+       padding:0}
+  .wrap{display:flex;flex-direction:column;gap:14px;max-width:960px;padding:14px 16px 20px}
+
+  .rainbow{height:10px;border:3px solid var(--line);
+    background:linear-gradient(to right,
+      #e22 0 16.6%, #f80 16.6% 33.3%, #fd0 33.3% 50%,
+      #3b3 50% 66.6%, #39c 66.6% 83.3%, #a4f 83.3% 100%)}
+  h1{font-size:25px;margin:0;text-transform:lowercase;letter-spacing:-1px;color:#111;
+     display:inline-block;background:#e8508a;padding:2px 9px 3px;align-self:flex-start;
+     border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
+  h1 .hrt{color:#111;font-size:19px}
+  .sub{margin:0;color:var(--dim);font-size:13px;max-width:56ch}
+
+  .panel{background:var(--panel);border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
+
+  .machine{padding:14px;display:flex;flex-direction:column;gap:11px}
+  .window{background:#f7f1e1;border:3px solid var(--line);padding:14px 13px 15px;
+          min-height:132px;display:flex;flex-direction:column;gap:8px;justify-content:center}
+  .tag{align-self:flex-start;font-size:10px;letter-spacing:2px;text-transform:lowercase;
+       border:2px solid #1b1b1b;padding:1px 6px;background:#fff;color:#1b1b1b}
+  .topic{margin:0;font-size:23px;line-height:1.15;letter-spacing:-.6px;text-transform:lowercase;
+         color:#1b1b1b;min-height:2.3em}
+  .hook{margin:0;font-size:13px;color:#3a3a3a;max-width:52ch}
+  .window.flick .topic,.window.flick .hook{opacity:.55}
+
+  button.pull{font-family:var(--mono);font-size:15px;letter-spacing:1px;text-transform:lowercase;
+    padding:12px 14px;cursor:pointer;background:#e8508a;color:#111;border:3px solid var(--line);
+    box-shadow:5px 5px 0 var(--line);width:100%}
+  button.pull:hover{transform:translate(-1px,-1px);box-shadow:6px 6px 0 var(--line)}
+  button.pull:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--line)}
+
+  .rows{display:flex;flex-wrap:wrap;gap:14px;align-items:stretch}
+  .recent{flex:1 1 260px;padding:11px}
+  .recent h2{margin:0 0 8px;font-size:10px;letter-spacing:2px;text-transform:lowercase;color:var(--dim)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:11px;border:2px solid var(--line);padding:2px 7px;background:var(--panel);
+        text-transform:lowercase}
+  .chip.empty{border-style:dashed;color:var(--dim)}
+  .tally{padding:11px;min-width:150px;display:flex;flex-direction:column}
+  .tally h2{margin:0 0 6px;font-size:10px;letter-spacing:2px;text-transform:lowercase;color:var(--dim)}
+  .tally b{font-size:26px;line-height:1}
+  .foot{margin:0;font-size:11px;color:var(--dim);letter-spacing:1px;text-transform:lowercase}
+  .tally .foot{margin-top:auto}
+  @media (max-width:430px){ .topic{font-size:20px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="rainbow"></div>
+  <h1>rabbit hole <span class="hrt">&#9829;</span></h1>
+  <p class="sub">one button, thirty topics, no repeats until you've worked through most of them.</p>
+
+  <section class="panel machine">
+    <div class="window" id="win">
+      <span class="tag" id="tag">ready</span>
+      <p class="topic" id="topic">pull the big button</p>
+      <p class="hook" id="hook">it'll land somewhere strange. that's the deal.</p>
+    </div>
+    <button class="pull" id="pull" type="button">pull a rabbit hole</button>
+  </section>
+
+  <div class="rows">
+    <section class="panel recent">
+      <h2>already down</h2>
+      <div class="chips" id="recent"><span class="chip empty">nothing yet</span></div>
+    </section>
+    <section class="panel tally">
+      <h2>pulled</h2>
+      <b id="count">0</b>
+      <p class="foot" id="left">30 left</p>
+    </section>
+  </div>
+
+  <p class="foot">the list is mine, guessed from what you read. tell me which ones are duds and I'll swap them.</p>
+</div>
+
+<script>
+(function(){
+  var LIST=[
+    ["the arsenic wallpaper craze","history","Victorian rooms were papered with a poison that went green under candlelight."],
+    ["the women who licked the brushes","history","radium watch dials, and a factory that told them the paint was safe."],
+    ["mummy brown","art","a paint sold for two centuries and part of it was ground up people."],
+    ["the colour worth more than gold","art","ultramarine came from one mountain in Afghanistan and nowhere else."],
+    ["sheela-na-gigs","history","rude little carvings on church walls in Ireland, and nobody agrees why."],
+    ["the voynich manuscript","mystery","a book in an alphabet nobody has ever read, sitting in a vault."],
+    ["why charleston houses are sideways","local","the single house turns its porch to the street instead of its face. there's a reason."],
+    ["the earthquake bolts","local","those iron stars on old downtown walls are repairs from 1886."],
+    ["what's calling at night on james island","local","the three birds you actually hear after dark, and what they want."],
+    ["the turnspit dog","animals","a small dog bred to run inside a wheel, turning meat over a fire. gone now."],
+    ["how cats domesticated themselves","animals","nobody chose the cat. the cat noticed the grain and moved in."],
+    ["what a possum is actually doing","animals","the faint is real, and it smells. it's not a trick of the mind."],
+    ["the language of flowers","history","entire messages sent in bouquets, with a dictionary to decode them."],
+    ["why 88 by 31","the old web","one size, chosen in the nineties, still the shape of every web button."],
+    ["the geocities archive","the old web","what survived, what the scripts ate, and what's still being rescued."],
+    ["where webrings went","the old web","the first social network was a circle of links, and it died of something specific."],
+    ["digital gardens","the old web","pages that grow instead of publishing on a schedule."],
+    ["killer rabbits in the margins","history","medieval monks drew rabbits murdering people in the edges of holy books."],
+    ["the royal game of ur","games","a board game older than writing, and we worked out the rules from clay."],
+    ["where playing cards came from","games","the suits travelled a long way before they settled into hearts and spades."],
+    ["the dancing plague of 1518","mystery","hundreds of people danced for days in one street, and some died."],
+    ["tulip mania, what really happened","history","less a crash than a hangover, and the famous chart is wrong."],
+    ["the moon's lopsided crescent","sky","a crescent never looks like a bowl. there's a reason it hangs the way it does."],
+    ["the colour of the sky on other worlds","sky","pink, butterscotch, and one that's black at noon."],
+    ["the first anaesthetic for animals","animals","what surgery looked like before it, and who argued about it."],
+    ["why vets wear the same scrubs as surgeons","animals","the uniform came from somewhere specific."],
+    ["paper before trees","history","the good stuff was made from rags, and that changed what books could be."],
+    ["the library that probably wasn't burned","history","alexandria's famous fire is the least interesting thing about its end."],
+    ["what's in the dirt under a harbour","local","charleston sits on fill, and the fill is a record."],
+    ["the woman who invented the wipers","history","nobody would make her patent, because the car was thought too fiddly for women."]
+  ];
+
+  var seen=[], recent=[], last=-1, count=0, flicker=null;
+
+  var win=document.getElementById("win"),
+      tagEl=document.getElementById("tag"),
+      topicEl=document.getElementById("topic"),
+      hookEl=document.getElementById("hook"),
+      countEl=document.getElementById("count"),
+      leftEl=document.getElementById("left"),
+      recentEl=document.getElementById("recent");
+
+  function paintRecent(){
+    recentEl.textContent="";   // build nodes, never inject markup
+    if(!recent.length){
+      var e=document.createElement("span"); e.className="chip empty"; e.textContent="nothing yet";
+      recentEl.appendChild(e); return;
+    }
+    recent.slice().reverse().forEach(function(i){
+      var s=document.createElement("span"); s.className="chip"; s.textContent=LIST[i][0];
+      recentEl.appendChild(s);
+    });
+  }
+
+  function show(i){
+    tagEl.textContent=LIST[i][1];
+    topicEl.textContent=LIST[i][0];
+    hookEl.textContent=LIST[i][2];
+  }
+
+  function pick(){
+    var pool=[];
+    for(var i=0;i<LIST.length;i++) if(seen.indexOf(i)===-1) pool.push(i);
+    if(!pool.length){ seen=[]; pool=LIST.map(function(_,i){return i;}); }
+    // no-repeat guard on top of the pool, so back-to-back can never repeat
+    var idx=pool[Math.floor(Math.random()*pool.length)];
+    if(pool.length>1&&idx===last){ idx=pool[(pool.indexOf(idx)+1)%pool.length]; }
+    return idx;
+  }
+
+  var busy=false;
+  function pull(){
+    if(busy) return;
+    busy=true;
+    win.classList.add("flick");
+    var steps=0;
+    flicker=setInterval(function(){
+      show(Math.floor(Math.random()*LIST.length));
+      if(++steps>7){
+        clearInterval(flicker);
+        var i=pick();
+        show(i);
+        last=i; seen.push(i); count++;
+        recent.push(i); if(recent.length>4) recent.shift();
+        countEl.textContent=count;
+        leftEl.textContent=(LIST.length-seen.length)+" left";
+        paintRecent();
+        win.classList.remove("flick");
+        busy=false;
+      }
+    },55);
+  }
+
+  document.getElementById("pull").addEventListener("click",pull);
+  paintRecent();
+  window.__rabbit={pick:pick,state:function(){return {count:count,seen:seen.slice(),last:last};},
+    list:LIST.length};
+})();
+</script>
+</body>
+</html>

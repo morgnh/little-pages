@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>the cabinet</title>
+<style>
+  :root{
+    --desk:#008080; --face:#c0c0c0; --ink:#000; --title1:#000080; --title2:#1084d0;
+    --serif:"Times New Roman",Times,serif; --ui:Tahoma,Verdana,sans-serif; --mono:"Courier New",monospace;
+    --wall:#161520; --paper:#f4eee0; --mid:#554e42;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background-color:var(--desk);
+    background-image:
+      linear-gradient(45deg,rgba(0,0,0,.09) 25%,transparent 25%,transparent 75%,rgba(0,0,0,.09) 75%),
+      linear-gradient(45deg,rgba(0,0,0,.09) 25%,transparent 25%,transparent 75%,rgba(0,0,0,.09) 75%);
+    background-size:4px 4px;background-position:0 0,2px 2px;
+    font-family:var(--serif);color:var(--ink);padding:22px 14px 44px;text-transform:lowercase;
+  }
+  a{color:#0000ee}
+  a:visited{color:#551a8b}
+
+  .win{max-width:1120px;margin:0 auto;background:var(--face);
+       border:2px solid;border-color:#dfdfdf #808080 #808080 #dfdfdf;
+       box-shadow:8px 8px 0 rgba(0,0,0,.35)}
+  .titlebar{display:flex;align-items:center;gap:6px;padding:3px 4px;
+    background:linear-gradient(90deg,var(--title1),var(--title2));color:#fff;
+    font:700 13px/1 var(--ui)}
+  .titlebar .tb-title{flex:1;padding-left:3px}
+  .tb-btn{width:18px;height:16px;background:var(--face);color:var(--ink);
+    border:2px solid;border-color:#fff #808080 #808080 #fff;
+    font:700 10px/12px var(--ui);text-align:center}
+  .menubar{display:flex;gap:14px;padding:2px 8px 3px;font:12px var(--ui);border-bottom:1px solid #808080}
+  .addressbar{display:flex;align-items:center;gap:6px;padding:4px 6px;
+    border-bottom:1px solid #808080;font:11px var(--ui)}
+  .addressbar .field{flex:1;background:#fff;border:2px solid;
+    border-color:#808080 #dfdfdf #dfdfdf #808080;padding:3px 6px;font:12px var(--mono);
+    overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+  .body{padding:18px 16px 26px;background:var(--wall);
+    background-image:
+      radial-gradient(circle at 50% -10%,rgba(255,255,255,.06),transparent 62%),
+      repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px)}
+
+  .head{text-align:center;color:var(--paper);padding:2px 8px 4px}
+  .head .plate{display:inline-block;border:3px solid #0b0a0e;background:var(--paper);color:#1b1b1b;
+    padding:6px 16px 7px;box-shadow:5px 5px 0 #0b0a0e}
+  .head h1{margin:0;font:700 24px/1.05 var(--mono);letter-spacing:-1px}
+  .blink{animation:blink 1.1s steps(2,start) infinite}
+  @keyframes blink{to{visibility:hidden}}
+  .head p{margin:10px auto 0;max-width:58ch;font:13px/1.55 var(--mono);color:#a9a2b8}
+  .head p b{color:var(--paper);font-weight:400}
+
+  .badgerow{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:14px 0 4px}
+  .b{font:700 10px/1 var(--mono);color:#111;background:#f7f1e1;border:3px solid #0b0a0e;
+     padding:4px 7px;box-shadow:3px 3px 0 #0b0a0e;letter-spacing:.5px}
+  .b.pink{background:#e8508a}
+  .b.mint{background:#2ec4b6}
+
+  .wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:34px 26px;
+        margin-top:22px;align-items:start}
+
+  .case{display:flex;flex-direction:column;position:relative;transition:transform .15s}
+  .frame{position:relative;border:3px solid #0b0a0e;background:#0e0e13;
+    box-shadow:6px 6px 0 rgba(0,0,0,.5);overflow:hidden}
+  .frame iframe{position:absolute;top:0;left:0;border:0;transform-origin:top left;background:#fff}
+  .case:hover .frame{box-shadow:8px 8px 0 rgba(0,0,0,.6)}
+  .shine{position:absolute;inset:0;pointer-events:none;z-index:2;
+    background:linear-gradient(160deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.02) 26%,transparent 42%)}
+  .flag{position:absolute;top:6px;right:6px;z-index:3;background:#e8508a;color:#111;
+    border:2px solid #0b0a0e;font:700 9px/1 var(--mono);padding:3px 5px;letter-spacing:1px}
+
+  .plaque{margin-top:9px;background:var(--paper);border:3px solid #0b0a0e;
+    box-shadow:4px 4px 0 rgba(0,0,0,.45);padding:7px 9px 8px;color:#1b1b1b;
+    display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:end}
+  .plaque .no{grid-column:1;font:700 9px/1 var(--mono);letter-spacing:2px;color:#6b6357}
+  .plaque h2{grid-column:1;margin:3px 0 4px;font:700 15px/1.15 var(--mono);letter-spacing:-.4px}
+  .plaque p{grid-column:1 / -1;margin:0;font:11.5px/1.4 var(--mono);color:var(--mid);min-height:2.8em}
+  .plaque .open{grid-column:2;grid-row:1 / span 2;align-self:center;font:11px/1.3 var(--mono);
+    letter-spacing:1px;text-align:right}
+  .plaque .open a{display:inline-block;border:2px solid #0b0a0e;padding:4px 6px;
+    background:#fff;text-decoration:none;color:#8a1f4f;box-shadow:2px 2px 0 rgba(0,0,0,.4)}
+
+  .case.empty{display:flex;flex-direction:column}
+  .case.empty .frame{aspect-ratio:4/3;display:grid;place-items:center;
+    border-style:dashed;border-color:#3b3546;box-shadow:none;background:#101017}
+  .case.empty .frame span{font:11px/1.5 var(--mono);color:#6e667e;text-align:center;padding:0 14px}
+  .case.empty .plaque{background:#1b1922;border-color:#3b3546;box-shadow:none;
+    display:block}
+  .case.empty .plaque h2{color:#b8b0c6;font-size:13px}
+  .case.empty .plaque p{color:#7d7590}
+  .case.empty .plaque .no{color:#6e667e}
+
+  .foot{max-width:1120px;margin:24px auto 0;font:11px/1.7 var(--mono);color:#cdd7d7;text-align:center}
+  .counter{display:inline-flex;gap:2px;vertical-align:middle;margin:0 3px}
+  .counter i{background:#0b0a0e;color:#7dff9b;border:2px solid #3b3546;font:700 12px/1 var(--mono);
+    padding:3px 4px;font-style:normal}
+
+  @media (max-width:640px){
+    body{padding:10px 8px 28px}
+    .wall{grid-template-columns:1fr;gap:22px}
+    .head h1{font-size:19px}
+    .plaque h2{font-size:13px}
+  }
+</style>
+</head>
+<body>
+<div class="win">
+  <div class="titlebar">
+    <span class="tb-title">the cabinet &mdash; morgan's widgets</span>
+    <span class="tb-btn">_</span><span class="tb-btn">&#9633;</span><span class="tb-btn">&#215;</span>
+  </div>
+  <div class="menubar">
+    <span>file</span><span>edit</span><span>view</span><span>go</span><span>help</span>
+  </div>
+  <div class="addressbar">
+    <span>address</span>
+    <span class="field">c:\morgan\little-pages\cabinet.html</span>
+  </div>
+
+  <div class="body">
+    <div class="head">
+      <div class="plate"><h1>the cabinet &#9829; <span class="blink">_</span></h1></div>
+      <p>every little thing built here, on its own plinth.<br>
+         <b>they're all running</b> &mdash; press the buttons, they work.</p>
+      <div class="badgerow">
+        <span class="b pink">made by hand</span>
+        <span class="b">no frameworks</span>
+        <span class="b mint">one file each</span>
+        <span class="b">best viewed at 800&times;600</span>
+      </div>
+    </div>
+
+    <div class="wall" id="wall"></div>
+  </div>
+</div>
+
+<div class="foot">
+  <span id="tally"></span><br>
+  you are visitor <span class="counter" id="counter"></span> to this shelf<br>
+  updated <span id="stamp"></span> &middot; built in hermes, november 2026
+</div>
+
+<script>
+(function(){
+  // number, name, blurb, file, natural width, natural height, new?
+  var EXHIBITS = [
+    ["01","color mixer","two paints, a ratio slider, the mix and its opposite","widgets/color-mixer.html",760,757,true],
+    ["02","badge maker","88 by 31 buttons, four looks, saved as a png","widgets/badge-maker.html",680,604,true],
+    ["03","moon phase","tonight's moon from the clock, plus 30 nights","widgets/moon-phase.html",700,587,true],
+    ["04","pet roll call","three animals and the fact that explains each","widgets/pet-roll-call.html",760,572,true],
+    ["05","rabbit hole","one button, thirty topics, no repeats","widgets/rabbit-hole.html",700,594,true],
+    ["06","jellypet","a translucent virtual pet that sulks","widgets/jellypet.html",380,930,false],
+    ["07","tide chart","charleston harbor, noaa station 8665530","widgets/tide-widget.html",420,712,false],
+    ["08","banana stand","a quote dispenser with a counter","widgets/banana-stand.html",432,740,false]
+  ];
+  var PLANNED = [
+    ["09","the now page","what she's reading, making and into this week"],
+    ["10","guestbook","an old hit counter and a sign-in book"],
+    ["11","palette from a photo","drop in a picture, get its five main colours"],
+    ["12","pixel pet drawer","a grid to draw a sprite and save it"],
+    ["13","webring bar","previous, random, next, linking her own pages"]
+  ];
+  var MAXH = 620;   // keeps a portrait widget from taking over the page
+
+  var wall=document.getElementById("wall");
+  var fits=[];
+
+  function el(tag,cls,text){
+    var n=document.createElement(tag);
+    if(cls) n.className=cls;
+    if(text!=null) n.textContent=text;
+    return n;
+  }
+
+  EXHIBITS.forEach(function(it){
+    var no=it[0],name=it[1],blurb=it[2],file=it[3],w=it[4],h=it[5],isNew=it[6];
+
+    var c=el("div","case");
+    var frame=el("div","frame");
+    var fr=document.createElement("iframe");
+    fr.src=file; fr.setAttribute("title",name); fr.loading="lazy"; fr.scrolling="no";
+    fr.style.width=w+"px"; fr.style.height=h+"px";
+    frame.appendChild(fr);
+    frame.appendChild(el("div","shine"));
+    if(isNew) frame.appendChild(el("div","flag","new!"));
+
+    var plaque=el("div","plaque");
+    plaque.appendChild(el("div","no","no. "+no));
+    plaque.appendChild(el("h2",null,name));
+    var open=el("div","open");
+    var a=document.createElement("a");
+    a.href=file; a.textContent="open \u2192"; a.title="open "+name+" full size";
+    open.appendChild(a);
+    plaque.appendChild(open);
+    plaque.appendChild(el("p",null,blurb));
+
+    c.appendChild(frame); c.appendChild(plaque);
+    // hand-pinned, not laser-aligned: a fixed wobble per case
+    var tilt=[-0.7,0.5,0.35,-0.45,0.6,-0.3,0.45,-0.55][EXHIBITS.indexOf(it)%8];
+    c.style.transform="rotate("+tilt+"deg)";
+    wall.appendChild(c);
+
+    function fit(){
+      var avail=frame.clientWidth;
+      if(!avail) return;
+      var s=Math.min(avail/w, MAXH/h, 1);          // never upscale, never crop
+      fr.style.transform="scale("+s+")";
+      frame.style.height=Math.round(h*s)+"px";
+      fr.style.left=Math.round((avail - w*s)/2)+"px";
+    }
+    fit(); fits.push(fit);
+  });
+
+  PLANNED.forEach(function(it){
+    var d=el("div","case empty");
+    var frame=el("div","frame");
+    frame.appendChild(el("span",null,"no exhibit yet"));
+    var plaque=el("div","plaque");
+    plaque.appendChild(el("div","no","no. "+it[0]));
+    plaque.appendChild(el("h2",null,it[1]));
+    plaque.appendChild(el("p",null,it[2]));
+    d.appendChild(frame); d.appendChild(plaque);
+    wall.appendChild(d);
+  });
+
+  document.getElementById("tally").textContent =
+    EXHIBITS.length+" exhibits, all live, "+PLANNED.length+" plinths still empty";
+
+  var d=new Date(), months=["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+  document.getElementById("stamp").textContent = months[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
+
+  var count=document.getElementById("counter");
+  "004271".split("").forEach(function(ch){ count.appendChild(el("i",null,ch)); });
+
+  function fitAll(){ fits.forEach(function(f){ f(); }); }
+  window.addEventListener("load",fitAll);
+  window.addEventListener("resize",fitAll);
+  setTimeout(fitAll,150); setTimeout(fitAll,700); setTimeout(fitAll,1600);
+})();
+</script>
+</body>
+</html>

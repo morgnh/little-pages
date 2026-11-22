@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>88x31 badge maker</title>
+<style>
+  :root{
+    --ink: #1b1b1b;
+    --line: #1b1b1b;
+    --panel: #fdf8ec;
+    --dim: #554e42;
+    --mono: "Courier New", "Courier", monospace;
+  }
+  html,body{background:#efe7d3;margin:0;padding:0}
+  body{font-family:var(--mono);color:var(--ink);font-size:14px;line-height:1.45;
+       padding:0}
+  .wrap{display:flex;flex-direction:column;gap:14px;max-width:960px;padding:14px 16px 20px}
+
+  .rainbow{height:10px;border:3px solid var(--line);
+    background:linear-gradient(to right,
+      #e22 0 16.6%, #f80 16.6% 33.3%, #fd0 33.3% 50%,
+      #3b3 50% 66.6%, #39c 66.6% 83.3%, #a4f 83.3% 100%)}
+  h1{font-size:25px;margin:0;text-transform:lowercase;letter-spacing:-1px;color:#111;
+     display:inline-block;background:#e8508a;padding:2px 9px 3px;
+     border:3px solid var(--line);box-shadow:6px 6px 0 var(--line);align-self:flex-start}
+  h1 .hrt{color:#111;text-shadow:none;font-size:19px}
+  .sub{margin:0;color:var(--dim);font-size:13px;max-width:56ch}
+
+  .panel{background:var(--panel);border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
+
+  .cols{display:grid;grid-template-columns:minmax(260px,1fr) minmax(240px,1fr);gap:14px;align-items:stretch}
+  @media (max-width:620px){ .cols{grid-template-columns:1fr} }
+
+  .stage{padding:12px;display:flex;flex-direction:column}
+  .stage h2,.controls h2{font-size:11px;margin:0 0 9px;text-transform:lowercase;
+    letter-spacing:2px;color:var(--dim)}
+  canvas#big{width:100%;max-width:352px;height:auto;aspect-ratio:88/31;image-rendering:pixelated;display:block;
+    border:3px solid var(--line);background:#fff;max-width:100%}
+  .actual{display:flex;align-items:center;gap:8px;margin-top:10px}
+  canvas#tiny{width:88px;height:31px;image-rendering:pixelated;border:1px solid var(--line)}
+  .actual span{font-size:10px;letter-spacing:1px;text-transform:lowercase;color:var(--dim)}
+  .buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:12px}
+  button.act{font-family:var(--mono);font-size:12px;padding:7px 10px;cursor:pointer;
+    background:var(--panel);color:var(--ink);border:3px solid var(--line);
+    box-shadow:3px 3px 0 var(--line);text-transform:lowercase;letter-spacing:.5px}
+  button.act:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--line)}
+  button.act:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+  button.act.primary{background:#e8508a;color:#111}
+
+  .controls{padding:12px;display:flex;flex-direction:column;gap:12px}
+  .field label{display:block;font-size:10px;letter-spacing:2px;text-transform:lowercase;
+    color:var(--dim);margin-bottom:4px}
+  input[type="text"]{font-family:var(--mono);font-size:13px;width:100%;box-sizing:border-box;
+    padding:6px 7px;border:3px solid var(--line);background:var(--panel);color:var(--ink)}
+  input[type="text"]:focus{outline:3px solid #e8508a;outline-offset:1px}
+
+  .row{display:flex;flex-wrap:wrap;gap:6px}
+  .pick{font-family:var(--mono);font-size:11px;padding:4px 7px;cursor:pointer;
+    background:var(--panel);color:var(--ink);border:2px solid var(--line);letter-spacing:.5px}
+  .pick[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+  .customwrap{display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+  .customwrap input[type="color"]{width:26px;height:18px;border:2px solid var(--line)}
+  .sws{display:grid;grid-template-columns:repeat(5,26px);gap:6px}
+  .sw{width:26px;height:26px;padding:0;border:3px solid var(--line);cursor:pointer;
+    box-shadow:2px 2px 0 var(--line)}
+  .sw[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:2px}
+  input[type="color"]{width:34px;height:24px;padding:0;border:3px solid var(--line);
+    background:var(--panel);cursor:pointer}
+  .foot{margin:0;font-size:11px;color:var(--dim);letter-spacing:1px;text-transform:lowercase}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="rainbow"></div>
+  <h1>badge maker <span class="hrt">&#9829;</span></h1>
+  <p class="sub">little 88 by 31 buttons for the corner of a page. type two lines, pick a look, save the png.</p>
+
+  <div class="cols">
+    <section class="stage panel">
+      <h2>preview</h2>
+      <canvas id="big" width="88" height="31" aria-label="badge preview, scaled up"></canvas>
+      <div class="actual">
+        <canvas id="tiny" width="88" height="31" aria-label="badge at actual size"></canvas>
+        <span>actual size</span>
+      </div>
+      <div class="buttons">
+        <button class="act primary" id="save1">save 88&times;31</button>
+        <button class="act" id="save4">save 4&times;</button>
+        <button class="act" id="shuffle">randomize</button>
+      </div>
+    </section>
+
+    <section class="controls panel">
+      <h2>the badge</h2>
+
+      <div class="field">
+        <label for="line1">top line</label>
+        <input type="text" id="line1" maxlength="18" value="made on a pc">
+      </div>
+      <div class="field">
+        <label for="line2">bottom line (optional)</label>
+        <input type="text" id="line2" maxlength="24" value="not a mac">
+      </div>
+
+      <div class="field">
+        <label>look</label>
+        <div class="row" id="styles"></div>
+      </div>
+
+      <div class="field">
+        <label>background</label>
+        <div class="sws" id="bgs"></div>
+      </div>
+
+      <div class="field">
+        <label>text</label>
+        <div class="row">
+          <button class="pick" data-txt="#ffffff">white</button>
+          <button class="pick" data-txt="#111111">black</button>
+          <button class="pick" data-txt="#fd0">yellow</button>
+          <label class="pick customwrap" for="txtPick">custom <input type="color" id="txtPick" value="#ffffff" aria-label="custom text colour"></label>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <p class="foot">save 88&times;31 is the real thing. save 4&times; is for posting somewhere bigger.</p>
+</div>
+
+<script>
+(function(){
+  var W=88, H=31;
+  var RAINBOW=["#e22","#f80","#fd0","#3b3","#39c","#a4f"];
+  var BG=["#000080","#008080","#800080","#c00000","#000000","#ffffff","#c0c0c0","#e8508a","#2ec4b6","#3b3"];
+  var STYLES=[["bevel","bevel"],["flat","flat"],["dither","dither"],["rainbow","rainbow"]];
+
+  var state={l1:"made on a pc", l2:"not a mac", style:"bevel", bg:"#000080", txt:"#ffffff"};
+
+  var big=document.getElementById("big"), tiny=document.getElementById("tiny");
+  var ctx=big.getContext("2d"), tctx=tiny.getContext("2d");
+  ctx.imageSmoothingEnabled=false; tctx.imageSmoothingEnabled=false;
+
+  function hex2rgb(h){h=h.replace("#","");
+    if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+  function shade(h,amt){
+    var c=hex2rgb(h).map(function(v){return Math.max(0,Math.min(255,Math.round(v+amt)));});
+    return "rgb("+c[0]+","+c[1]+","+c[2]+")";
+  }
+  function dark(h){return shade(h,-60);}
+  function light(h){return shade(h,70);}
+
+  function fillBg(c){ c.fillStyle=state.bg; c.fillRect(0,0,W,H); }
+
+  function drawBg(c){
+    if(state.style==="rainbow"){
+      var hs=[5,5,5,5,6,5], y=0;
+      for(var i=0;i<6;i++){ c.fillStyle=RAINBOW[i]; c.fillRect(0,y,W,hs[i]); y+=hs[i]; }
+      return;
+    }
+    fillBg(c);
+    if(state.style==="dither"){
+      c.fillStyle=dark(state.bg);
+      for(var yy=0;yy<H;yy++) for(var xx=(yy%2);xx<W;xx+=2) c.fillRect(xx,yy,1,1);
+    }
+    if(state.style==="bevel"){
+      c.fillStyle=light(state.bg); c.fillRect(0,0,W,1); c.fillRect(0,0,1,H);
+      c.fillStyle=dark(state.bg);   c.fillRect(0,H-1,W,1); c.fillRect(W-1,0,1,H);
+      c.fillStyle=light(state.bg); c.fillRect(1,1,W-2,1); c.fillRect(1,1,1,H-2);
+      c.fillStyle=dark(state.bg);   c.fillRect(1,H-2,W-2,1); c.fillRect(W-2,1,1,H-2);
+    } else {
+      c.fillStyle=dark(state.bg);
+      c.fillRect(0,0,W,1); c.fillRect(0,H-1,W,1); c.fillRect(0,0,1,H); c.fillRect(W-1,0,1,H);
+    }
+  }
+
+  function fitText(c,text,maxW,size){
+    var s=size;
+    while(s>5){ c.font="bold "+s+'px "Courier New", monospace';
+      if(c.measureText(text).width<=maxW) return s; s--; }
+    return s;
+  }
+
+  var tmp=document.createElement("canvas"); tmp.width=W; tmp.height=H;
+  var sctx=tmp.getContext("2d");
+
+  // draw on a scratch canvas, then hard-threshold the alpha so the glyphs
+  // land on whole pixels — antialiased type smears badly at 4x
+  function stampText(c,text,y,maxW,size){
+    sctx.clearRect(0,0,W,H);
+    var s=fitText(sctx,text,maxW,size);
+    sctx.font="bold "+s+'px "Courier New", monospace';
+    sctx.textAlign="center"; sctx.textBaseline="alphabetic";
+    sctx.fillStyle="#000";
+    sctx.fillText(text,W/2+1,y+1);
+    sctx.fillStyle=state.txt;
+    sctx.fillText(text,W/2,y);
+    var img=sctx.getImageData(0,0,W,H), d=img.data;
+    for(var i=3;i<d.length;i+=4){ d[i]= d[i]>110 ? 255 : 0; }
+    sctx.putImageData(img,0,0);
+    c.drawImage(tmp,0,0);
+  }
+
+  function render(){
+    ctx.clearRect(0,0,W,H);
+    drawBg(ctx);
+    var l1=(state.l1||"").trim(), l2=(state.l2||"").trim();
+    if(l1&&l2){
+      stampText(ctx,l1,13,82,11);
+      stampText(ctx,l2,26,82,9);
+    } else if(l1){
+      stampText(ctx,l1,21,82,12);
+    } else if(l2){
+      stampText(ctx,l2,21,82,10);
+    }
+    tctx.clearRect(0,0,W,H);
+    tctx.drawImage(big,0,0);
+    syncControls();
+  }
+
+  function syncControls(){
+    document.querySelectorAll("#styles .pick").forEach(function(b){
+      b.setAttribute("aria-pressed", b.dataset.style===state.style?"true":"false");
+    });
+    document.querySelectorAll("#bgs .sw").forEach(function(b){
+      b.setAttribute("aria-pressed", b.dataset.col===state.bg?"true":"false");
+    });
+    document.querySelectorAll("[data-txt]").forEach(function(b){
+      b.setAttribute("aria-pressed", b.dataset.txt===state.txt?"true":"false");
+    });
+    var i1=document.getElementById("line1"), i2=document.getElementById("line2");
+    if(document.activeElement!==i1) i1.value=state.l1;
+    if(document.activeElement!==i2) i2.value=state.l2;
+  }
+
+  function build(){
+    var sbox=document.getElementById("styles");
+    STYLES.forEach(function(pair){
+      var b=document.createElement("button");
+      b.className="pick"; b.type="button"; b.dataset.style=pair[0]; b.textContent=pair[1];
+      b.addEventListener("click",function(){ state.style=pair[0]; render(); });
+      sbox.appendChild(b);
+    });
+    var box=document.getElementById("bgs");
+    BG.forEach(function(col){
+      var b=document.createElement("button");
+      b.className="sw"; b.type="button"; b.style.background=col;
+      b.dataset.col=col; b.setAttribute("aria-label","background "+col);
+      b.addEventListener("click",function(){ state.bg=col; render(); });
+      box.appendChild(b);
+    });
+    document.querySelectorAll("[data-txt]").forEach(function(b){
+      b.addEventListener("click",function(){ state.txt=b.dataset.txt; render(); });
+    });
+    document.getElementById("txtPick").addEventListener("input",function(e){
+      state.txt=e.target.value; render();
+    });
+    document.getElementById("line1").addEventListener("input",function(e){
+      state.l1=e.target.value; render();
+    });
+    document.getElementById("line2").addEventListener("input",function(e){
+      state.l2=e.target.value; render();
+    });
+    document.getElementById("save1").addEventListener("click",function(){ save(1); });
+    document.getElementById("save4").addEventListener("click",function(){ save(4); });
+    document.getElementById("shuffle").addEventListener("click",function(){
+      var i=Math.floor(Math.random()*BG.length), j=Math.floor(Math.random()*STYLES.length);
+      state.bg=BG[i]; state.style=STYLES[j][0];
+      state.txt = (i===5||i===6) ? "#111111" : "#ffffff";
+      render();
+    });
+  }
+
+  function save(scale){
+    var out=document.createElement("canvas");
+    out.width=W*scale; out.height=H*scale;
+    var oc=out.getContext("2d");
+    oc.imageSmoothingEnabled=false;
+    oc.drawImage(big,0,0,out.width,out.height);
+    var a=document.createElement("a");
+    a.download="badge.png";
+    a.href=out.toDataURL("image/png");
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  build(); render();
+  window.__badge={state:state,render:render,get:function(){return {style:state.style,bg:state.bg,txt:state.txt};},
+    px:function(){return Array.prototype.slice.call(ctx.getImageData(2,2,1,1).data).join(",");}};
+})();
+</script>
+</body>
+</html>
