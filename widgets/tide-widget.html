@@ -1,4 +1,5 @@
-<!doctype html><html><head><meta charset="utf-8"><style>
+<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><style>
 *{margin:0;box-sizing:border-box}
 body{width:420px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
 background:#0e141a;color:#e8eef4;padding:16px;margin:0}
@@ -16,7 +17,66 @@ svg{display:block;overflow:visible}
 .dot{fill:#4fb3d9}
 .foot{display:flex;justify-content:space-between;font-size:9.5px;color:#55697a;
 margin-top:8px;border-top:1px solid #1a252f;padding-top:8px}
+</style>
+<style>
+  /* ---- lp zone: the harbor wall ---------------------------------- */
+  html,body{width:auto !important;height:auto}
+  body{
+    margin:0;padding:0;min-height:100vh;
+    font-family:"Times New Roman",Times,Georgia,serif;
+    background-color:#0b1a26;
+    background-image:
+      repeating-radial-gradient(circle at 24px 0, #17505f 22px, rgba(0,0,0,0) 23px),
+      linear-gradient(180deg, #07131c 0%, #0d2231 52%, #17485c 100%);
+    background-repeat:repeat-x, no-repeat;
+    background-position:0 100%, 0 0;
+    background-size:48px 26px, 100% 100%;
+    color:#e8eef4;
+  }
+  .lp-shell{width:100%;max-width:520px;margin:0 auto;padding:16px 14px 30px}
+  .lp-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    font:11px/1.5 "Courier New",Courier,monospace;text-transform:lowercase;
+    letter-spacing:.05em;color:#8fb3c6;margin-bottom:14px}
+  .lp-top a{color:#f0c07a;text-decoration:none;border-bottom:1px dotted #f0c07a}
+  .lp-top a:hover{color:#fff;border-bottom-style:solid}
+  .lp-banner{text-align:center;margin:0 0 16px}
+  .lp-banner h1{margin:0;font:700 27px/1.05 "Times New Roman",Times,serif;
+    text-transform:lowercase;letter-spacing:.05em;color:#fdf6e6;
+    -webkit-text-stroke:1.2px #07131c;
+    text-shadow:3px 3px 0 #2b7f92, 6px 6px 0 rgba(0,0,0,.45)}
+  .lp-banner p{margin:9px 0 0;font:italic 13px/1.45 "Times New Roman",Times,serif;
+    text-transform:lowercase;color:#b7d2df}
+  .lp-rope{display:flex;justify-content:center;gap:6px;margin:10px 0 0;color:#f0c07a;
+    font:10px/1 "Courier New",monospace;letter-spacing:.4em}
+  .lp-slot{
+    background:#0e141a;border:2px solid #f0c07a;border-radius:3px;
+    box-shadow:6px 6px 0 rgba(0,0,0,.5), 0 0 0 1px #07131c inset;
+    padding:0;
+  }
+  .lp-widget{width:100%;max-width:420px;margin:0 auto;padding:16px}
+  .lp-widget svg{max-width:100%;height:auto;display:block}
+  @media (max-width:430px){ .lp-widget{padding:12px} }
+  .lp-foot{margin:16px 0 0;text-align:center;
+    font:10.5px/1.7 "Courier New",Courier,monospace;text-transform:lowercase;
+    color:#a9c8d8;letter-spacing:.05em}
+  .lp-stamp{display:inline-block;margin-top:9px;padding:2px 8px 3px;
+    border:1px dashed #f0c07a;color:#f0c07a;font:10px/1.3 "Courier New",monospace;
+    letter-spacing:.16em;transform:rotate(-1.2deg)}
 </style></head><body>
+<div class="lp-shell">
+  <div class="lp-top">
+    <a href="./">&laquo; the widgets</a>
+    <span>taped up by the dock &middot; nov 2026</span>
+  </div>
+
+  <div class="lp-banner">
+    <h1>charleston harbor, at night</h1>
+    <p>what the water is doing while you are asleep</p>
+    <div class="lp-rope" aria-hidden="true">&#8767; &#8767; &#8767;</div>
+  </div>
+
+  <div class="lp-slot">
+  <div class="lp-widget">
 <div class="eyebrow">Charleston Harbor</div>
 <h1>Tides &middot; Sat Nov 21</h1>
 <div class="sub">NOAA station 8665530 &middot; feet above MLLW &middot; local time</div>
@@ -38,4 +98,12 @@ stroke="#0e141a" stroke-width="2"/>
 </g></svg>
 <div class="foot"><span>Range 0.1 &ndash; 5.7 ft</span>
 <span>Now 3:00 AM &middot; 5.3 ft</span></div>
+  </div>
+  </div>
+
+  <p class="lp-foot">a snapshot taped to the wall, not a live feed<br>
+  <span class="lp-stamp">noaa 8665530 &middot; 21 nov 2026</span></p>
+</div>
+
+<script src="../webring.js"></script>
 </body></html>

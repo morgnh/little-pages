@@ -8,14 +8,24 @@
    ------------------------------------------------------------------ */
 (function () {
   var PAGES = [
-    { path: "",                   label: "home" },
-    { path: "keepers-index.html", label: "keepers index" },
-    { path: "widgets/",           label: "widgets" }
+    { path: "",                        label: "home" },
+    { path: "keepers-index.html",      label: "keepers index" },
+    { path: "widgets/",                label: "widgets" },
+    { path: "widgets/jellypet.html",   label: "grape the jellypet" },
+    { path: "widgets/tide-widget.html", label: "the tide chart" },
+    { path: "widgets/banana-stand.html", label: "the banana stand" }
   ];
 
   // where this script lives is the site root, so the same file works
   // from /little-pages/ and from /little-pages/widgets/
-  var script = document.currentScript;
+  var script = document.currentScript ||
+    (function () {
+      var all = document.getElementsByTagName("script");
+      for (var k = all.length - 1; k >= 0; k--) {
+        if (/webring\.js/.test(all[k].src)) return all[k];
+      }
+      return null;
+    })();
   if (!script || !script.src) return;
   var root = new URL(".", script.src).href;
 

@@ -12,9 +12,9 @@ live at https://morgnh.github.io/little-pages/ (GitHub Pages, `main` branch, roo
 | `index.html` | the closet homepage: a 90s browser window with three drawers |
 | `keepers-index.html` | clippings worth keeping, also a browser window |
 | `widgets/index.html` | the widgets page: tab bar, three live widgets |
-| `widgets/jellypet.html` | virtual pet, live canvas, feed and play |
-| `widgets/tide-widget.html` | charleston harbor tide chart, baked-in snapshot |
-| `widgets/banana-stand.html` | quote dispenser with a counter |
+| `widgets/jellypet.html` | virtual pet, live canvas, feed and play. also its own page in the ring |
+| `widgets/tide-widget.html` | charleston harbor tide chart, baked-in snapshot. also its own page in the ring |
+| `widgets/banana-stand.html` | quote dispenser with a counter. also its own page in the ring |
 | `widgets/README.md` | notes on the widgets and how to host them |
 
 ## house style
