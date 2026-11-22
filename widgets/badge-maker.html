@@ -3,109 +3,130 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>88x31 badge maker</title>
+<title>badge maker</title>
 <style>
   :root{
-    --ink: #1b1b1b;
-    --line: #1b1b1b;
-    --panel: #fdf8ec;
-    --dim: #554e42;
-    --mono: "Courier New", "Courier", monospace;
+    --ink:#1b1b1b; --line:#1b1b1b; --panel:#fdf8ec; --dim:#554e42;
+    --mono:"Courier New",Courier,monospace; --ui:"Lucida Console",Consolas,monospace;
   }
   html,body{background:#efe7d3;margin:0;padding:0}
-  body{font-family:var(--mono);color:var(--ink);font-size:14px;line-height:1.45;
-       padding:0}
-  .wrap{display:flex;flex-direction:column;gap:14px;max-width:960px;padding:14px 16px 20px}
+  body{font-family:var(--mono);color:var(--ink);font-size:15px;letter-spacing:-0.1px;padding:0}
+  .wrap{display:flex;flex-direction:column;gap:14px;max-width:820px;padding:14px 16px 22px}
 
   .rainbow{height:10px;border:3px solid var(--line);
     background:linear-gradient(to right,
       #e22 0 16.6%, #f80 16.6% 33.3%, #fd0 33.3% 50%,
       #3b3 50% 66.6%, #39c 66.6% 83.3%, #a4f 83.3% 100%)}
   h1{font-size:25px;margin:0;text-transform:lowercase;letter-spacing:-1px;color:#111;
-     display:inline-block;background:#e8508a;padding:2px 9px 3px;
-     border:3px solid var(--line);box-shadow:6px 6px 0 var(--line);align-self:flex-start}
-  h1 .hrt{color:#111;text-shadow:none;font-size:19px}
-  .sub{margin:0;color:var(--dim);font-size:13px;max-width:56ch}
+     display:inline-block;background:#e8508a;padding:2px 9px 3px;align-self:flex-start;
+     border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
+  h1 .hrt{color:#111;font-size:19px}
+  .sub{margin:0;color:var(--dim);font-size:14px;max-width:62ch}
 
   .panel{background:var(--panel);border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
 
-  .cols{display:grid;grid-template-columns:minmax(260px,1fr) minmax(240px,1fr);gap:14px;align-items:stretch}
-  @media (max-width:620px){ .cols{grid-template-columns:1fr} }
+  .cols{display:grid;grid-template-columns:minmax(300px,1fr) minmax(260px,1fr);gap:14px;align-items:stretch}
+  .leftcol{display:flex;flex-direction:column;gap:14px;min-height:100%}
+  @media (max-width:660px){ .cols{grid-template-columns:1fr} }
 
-  .stage{padding:12px;display:flex;flex-direction:column}
-  .stage h2,.controls h2{font-size:11px;margin:0 0 9px;text-transform:lowercase;
-    letter-spacing:2px;color:var(--dim)}
-  canvas#big{width:100%;max-width:352px;height:auto;aspect-ratio:88/31;image-rendering:pixelated;display:block;
-    border:3px solid var(--line);background:#fff;max-width:100%}
-  .actual{display:flex;align-items:center;gap:8px;margin-top:10px}
-  canvas#tiny{width:88px;height:31px;image-rendering:pixelated;border:1px solid var(--line)}
-  .actual span{font-size:10px;letter-spacing:1px;text-transform:lowercase;color:var(--dim)}
-  .buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:12px}
+  .stage{padding:12px;display:flex;flex-direction:column;gap:12px}
+  .stage h2,.controls h2{margin:0;font-size:12px;letter-spacing:1.6px;text-transform:lowercase;color:var(--dim)}
+  .screen{background:#0e0e13;border:3px solid var(--line);padding:12px;display:grid;place-items:center}
+  canvas#big{width:100%;max-width:352px;height:auto;aspect-ratio:88/31;image-rendering:pixelated;display:block}
+  .actual{display:flex;align-items:center;gap:10px}
+  canvas#tiny{width:88px;height:31px;image-rendering:pixelated;border:1px solid #00000066}
+  .actual span{font-size:11px;letter-spacing:1px;text-transform:lowercase;color:var(--dim)}
+
+  .buttons{display:flex;flex-wrap:wrap;gap:8px}
   button.act{font-family:var(--mono);font-size:12px;padding:7px 10px;cursor:pointer;
     background:var(--panel);color:var(--ink);border:3px solid var(--line);
-    box-shadow:3px 3px 0 var(--line);text-transform:lowercase;letter-spacing:.5px}
+    box-shadow:3px 3px 0 var(--line);text-transform:lowercase;letter-spacing:1px}
   button.act:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--line)}
   button.act:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
   button.act.primary{background:#e8508a;color:#111}
 
   .controls{padding:12px;display:flex;flex-direction:column;gap:12px}
-  .field label{display:block;font-size:10px;letter-spacing:2px;text-transform:lowercase;
-    color:var(--dim);margin-bottom:4px}
-  input[type="text"]{font-family:var(--mono);font-size:13px;width:100%;box-sizing:border-box;
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:11px;letter-spacing:1.6px;text-transform:lowercase;color:var(--dim)}
+  input[type="text"]{font-family:var(--ui);font-size:13px;width:100%;box-sizing:border-box;
     padding:6px 7px;border:3px solid var(--line);background:var(--panel);color:var(--ink)}
   input[type="text"]:focus{outline:3px solid #e8508a;outline-offset:1px}
 
   .row{display:flex;flex-wrap:wrap;gap:6px}
-  .pick{font-family:var(--mono);font-size:11px;padding:4px 7px;cursor:pointer;
-    background:var(--panel);color:var(--ink);border:2px solid var(--line);letter-spacing:.5px}
+  .pick{font-family:var(--mono);font-size:11px;padding:4px 8px;cursor:pointer;
+    background:var(--panel);color:var(--ink);border:2px solid var(--line);letter-spacing:.8px;
+    text-transform:lowercase}
   .pick[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
-  .customwrap{display:inline-flex;align-items:center;gap:5px;cursor:pointer}
-  .customwrap input[type="color"]{width:26px;height:18px;border:2px solid var(--line)}
-  .sws{display:grid;grid-template-columns:repeat(5,26px);gap:6px}
-  .sw{width:26px;height:26px;padding:0;border:3px solid var(--line);cursor:pointer;
-    box-shadow:2px 2px 0 var(--line)}
+
+  .sws{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .sw{height:26px;padding:0;border:3px solid var(--line);cursor:pointer;box-shadow:2px 2px 0 var(--line)}
   .sw[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:2px}
-  input[type="color"]{width:34px;height:24px;padding:0;border:3px solid var(--line);
-    background:var(--panel);cursor:pointer}
-  .foot{margin:0;font-size:11px;color:var(--dim);letter-spacing:1px;text-transform:lowercase}
+  input[type="color"]{width:38px;height:26px;padding:0;border:3px solid var(--line);background:var(--panel);cursor:pointer}
+  .customwrap{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.8px;
+    color:var(--dim);text-transform:lowercase}
+
+  .snippet{padding:12px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .snippet h2{margin:0;font-size:12px;letter-spacing:1.6px;text-transform:lowercase;color:var(--dim)}
+  .snippet code{display:block;font-family:var(--ui);font-size:11.5px;line-height:1.5;background:#fff;
+    border:2px solid var(--line);padding:7px 8px;color:#1b1b1b;
+    white-space:pre-wrap;word-break:break-word}
+
+  .foot{margin:0;font-size:12px;color:var(--dim);letter-spacing:.5px;text-transform:lowercase}
+  .toast{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:#1b1b1b;color:#fff;
+    padding:7px 13px;font-size:12px;letter-spacing:1px;text-transform:lowercase;opacity:0;
+    transition:opacity .15s;pointer-events:none;z-index:50;border:3px solid #fff}
+  .toast.on{opacity:1}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="rainbow"></div>
   <h1>badge maker <span class="hrt">&#9829;</span></h1>
-  <p class="sub">little 88 by 31 buttons for the corner of a page. type two lines, pick a look, save the png.</p>
+  <p class="sub">88 by 31, drawn in a hand-made pixel font. three looks, then save the png or copy the snippet.</p>
 
   <div class="cols">
-    <section class="stage panel">
+    <div class="leftcol">
+    <section class="panel stage">
       <h2>preview</h2>
-      <canvas id="big" width="88" height="31" aria-label="badge preview, scaled up"></canvas>
+      <div class="screen"><canvas id="big" width="88" height="31" aria-label="badge, scaled up"></canvas></div>
       <div class="actual">
-        <canvas id="tiny" width="88" height="31" aria-label="badge at actual size"></canvas>
-        <span>actual size</span>
+        <canvas id="tiny" width="88" height="31" aria-label="badge at real size"></canvas>
+        <span>real size</span>
       </div>
       <div class="buttons">
-        <button class="act primary" id="save1">save 88&times;31</button>
-        <button class="act" id="save4">save 4&times;</button>
-        <button class="act" id="shuffle">randomize</button>
+        <button class="act primary" id="save1" type="button">save 88&times;31</button>
+        <button class="act" id="save4" type="button">save 4&times;</button>
+        <button class="act" id="copysnip" type="button">copy snippet</button>
       </div>
     </section>
 
-    <section class="controls panel">
+    <section class="panel snippet">
+      <h2>paste this into a page</h2>
+      <code id="snip">&lt;img src="badges/made-by-hand.png" width="88" height="31" alt="made by hand"&gt;</code>
+      <p class="foot">the file name follows the top line, so save the png with that name and the snippet works as it stands.</p>
+    </section>
+    </div>
+
+    <section class="panel controls">
       <h2>the badge</h2>
 
       <div class="field">
-        <label for="line1">top line</label>
-        <input type="text" id="line1" maxlength="18" value="made on a pc">
+        <label for="line1">top line &mdash; 14 characters, no more</label>
+        <input type="text" id="line1" maxlength="14" value="made by hand" spellcheck="false">
       </div>
       <div class="field">
-        <label for="line2">bottom line (optional)</label>
-        <input type="text" id="line2" maxlength="24" value="not a mac">
+        <label for="line2">bottom line</label>
+        <input type="text" id="line2" maxlength="14" value="no frameworks" spellcheck="false">
+      </div>
+
+      <div class="field">
+        <label>quick fill</label>
+        <div class="row" id="presets"></div>
       </div>
 
       <div class="field">
         <label>look</label>
-        <div class="row" id="styles"></div>
+        <div class="row" id="looks"></div>
       </div>
 
       <div class="field">
@@ -115,146 +136,247 @@
 
       <div class="field">
         <label>text</label>
-        <div class="row">
-          <button class="pick" data-txt="#ffffff">white</button>
-          <button class="pick" data-txt="#111111">black</button>
-          <button class="pick" data-txt="#fd0">yellow</button>
-          <label class="pick customwrap" for="txtPick">custom <input type="color" id="txtPick" value="#ffffff" aria-label="custom text colour"></label>
+        <div class="row" id="inks">
+          <button class="pick" data-ink="#ffffff" type="button">white</button>
+          <button class="pick" data-ink="#111111" type="button">black</button>
+          <button class="pick" data-ink="#fd0" type="button">yellow</button>
+          <label class="customwrap">custom <input type="color" id="inkPick" value="#ffffff" aria-label="text colour"></label>
         </div>
       </div>
     </section>
   </div>
 
-  <p class="foot">save 88&times;31 is the real thing. save 4&times; is for posting somewhere bigger.</p>
+  <p class="foot">the font is fixed at 5 by 7 pixels, so nothing blurs and nothing scales badly. long words won't fit, that's the deal.</p>
+  <div class="toast" id="toast"></div>
 </div>
 
 <script>
 (function(){
   var W=88, H=31;
-  var RAINBOW=["#e22","#f80","#fd0","#3b3","#39c","#a4f"];
-  var BG=["#000080","#008080","#800080","#c00000","#000000","#ffffff","#c0c0c0","#e8508a","#2ec4b6","#3b3"];
-  var STYLES=[["bevel","bevel"],["flat","flat"],["dither","dither"],["rainbow","rainbow"]];
 
-  var state={l1:"made on a pc", l2:"not a mac", style:"bevel", bg:"#000080", txt:"#ffffff"};
+  // ---------------- 5x7 pixel font: rows top to bottom, '#' is a pixel
+  var G={
+    "a":[".....",".....",".###.","....#",".####","#...#",".####"],
+    "b":["#....","#....","####.","#...#","#...#","#...#","####."],
+    "c":[".....",".....",".####","#....","#....","#....",".####"],
+    "d":["....#","....#",".####","#...#","#...#","#...#",".####"],
+    "e":[".....",".....",".###.","#...#","#####","#....",".###."],
+    "f":["..###",".#...","####.",".#...",".#...",".#...",".#..."],
+    "g":[".....",".....",".####","#...#",".####","....#",".###."],
+    "h":["#....","#....","####.","#...#","#...#","#...#","#...#"],
+    "i":["..#..",".....","..#..","..#..","..#..","..#..","..#.."],
+    "j":["...#.",".....","...#.","...#.","...#.","#..#.",".##.."],
+    "k":["#....","#....","#..#.","#.#..","##...","#.#..","#..#."],
+    "l":["##...",".#...",".#...",".#...",".#...",".#...",".###."],
+    "m":[".....",".....","##.#.","#.#.#","#.#.#","#...#","#...#"],
+    "n":[".....",".....","####.","#...#","#...#","#...#","#...#"],
+    "o":[".....",".....",".###.","#...#","#...#","#...#",".###."],
+    "p":[".....",".....","####.","#...#","####.","#....","#...."],
+    "q":[".....",".....",".####","#...#",".####","....#","....#"],
+    "r":[".....",".....","#.##.","##...","#....","#....","#...."],
+    "s":[".....",".....",".####","#....",".###.","....#","####."],
+    "t":[".#...",".#...","###..",".#...",".#...",".#...","..###"],
+    "u":[".....",".....","#...#","#...#","#...#","#...#",".####"],
+    "v":[".....",".....","#...#","#...#","#...#",".#.#.","..#.."],
+    "w":[".....",".....","#...#","#...#","#.#.#","#.#.#",".#.#."],
+    "x":[".....",".....","#...#",".#.#.","..#..",".#.#.","#...#"],
+    "y":[".....",".....","#...#","#...#",".####","....#",".###."],
+    "z":[".....",".....","#####","...#.","..#..",".#...","#####"],
+    "0":[".###.","#...#","#..##","#.#.#","##..#","#...#",".###."],
+    "1":["..#..",".##..","..#..","..#..","..#..","..#..",".###."],
+    "2":[".###.","#...#","..##.",".#...","#....","#..#.","#####"],
+    "3":["####.","....#",".###.","....#","....#","....#","####."],
+    "4":["#..#.","#..#.","#..#.","#####","...#.","...#.","...#."],
+    "5":["#####","#....","####.","....#","....#","#...#",".###."],
+    "6":[".###.","#....","#....","####.","#...#","#...#",".###."],
+    "7":["#####","....#","...#.","..#..",".#...",".#...",".#..."],
+    "8":[".###.","#...#","#...#",".###.","#...#","#...#",".###."],
+    "9":[".###.","#...#","#...#",".####","....#","....#",".###."],
+    " ":[".....",".....",".....",".....",".....",".....","....."],
+    ".":[".....",".....",".....",".....",".....",".....","..#.."],
+    ",":[".....",".....",".....",".....",".....","..#..",".#..."],
+    "!":["..#..","..#..","..#..","..#..",".....",".....","..#.."],
+    "?":[".###.","#...#","...#.","..#..",".....","..#..","....."],
+    "'":["..#..","..#..",".....",".....",".....",".....","....."],
+    "-":[".....",".....",".....",".###.",".....",".....","....."],
+    "/":["....#","....#","...#.","..#..",".#...","#....","#...."],
+    ":":[".....",".....","..#..",".....",".....","..#..","....."],
+    "+":[".....","..#..","..#..","#####","..#..","..#..","....."],
+    "$":["..#..",".####","#.#..",".###.","..#.#","####.",".#..."],
+    ">":[".....","#....",".#...","..#..",".#...","#....","....."],
+    "~":[".....",".....",".#...","#.#.#","...#.",".....","....."],
+    "%":["#...#","#..#.","..#..",".#...","#..#.","#...#","....."],
+    "&":[".##..","#..#.",".##..","#.#.#","#..#.",".##.#","....."],
+    "*":[".....","#.#.#",".###.","#####",".###.","#.#.#","....."]
+  };
+
+  function glyph(ch){
+    if(ch==="\u2665") return [".....",".#.#.","#####","#####",".###.","..#..","....."];
+    return G[ch.toLowerCase()]||G["?"];
+  }
+  function textWidth(t){ return t.length? t.length*6-1 : 0; }
+  function drawText(ctx,text,x,y,color){
+    ctx.fillStyle=color;
+    var cx=x;
+    for(var i=0;i<text.length;i++){
+      var g=glyph(text[i]);
+      for(var r=0;r<7;r++){
+        var row=g[r]||"";
+        for(var c=0;c<5;c++) if(row[c]==="#") ctx.fillRect(cx+c,y+r,1,1);
+      }
+      cx+=6;
+    }
+  }
+  function drawCentred(ctx,text,y,color,w){
+    w=w||W;
+    var tw=textWidth(text);
+    drawText(ctx,text,Math.max(1,Math.round((w-tw)/2)),y,color);
+  }
+
+  function h2r(h){h=h.replace("#","");
+    if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+  function shade(h,amt){
+    var c=h2r(h).map(function(v){return Math.max(0,Math.min(255,Math.round(v+amt)));});
+    return "rgb("+c[0]+","+c[1]+","+c[2]+")";
+  }
+  function px(ctx,x,y,w,h,col){ ctx.fillStyle=col; ctx.fillRect(x,y,w,h); }
+
+  // ---------------- the three looks
+  function lookRaised(ctx){
+    var bg=state.bg;
+    px(ctx,0,0,W,H,bg);
+    px(ctx,0,0,W,1,shade(bg,70)); px(ctx,0,0,1,H,shade(bg,70));
+    px(ctx,0,H-1,W,1,shade(bg,-70)); px(ctx,W-1,0,1,H,shade(bg,-70));
+    px(ctx,1,1,W-2,1,shade(bg,35)); px(ctx,1,1,1,H-2,shade(bg,35));
+    px(ctx,1,H-2,W-2,1,shade(bg,-40)); px(ctx,W-2,1,1,H-2,shade(bg,-40));
+    if(state.l1&&state.l2){
+      drawCentred(ctx,state.l1,7,state.ink);
+      drawCentred(ctx,state.l2,18,state.ink);
+    } else if(state.l1){
+      drawCentred(ctx,state.l1,12,state.ink);
+    }
+  }
+
+  function lookRainbow(ctx){
+    var cols=["#e22","#f80","#fd0","#3b3","#39c","#a4f"];
+    var step=H/6;
+    for(var i=0;i<6;i++) px(ctx,0,Math.floor(i*step),W,Math.ceil(step),cols[i]);
+    var lines=[state.l1,state.l2].filter(Boolean);
+    var widest=lines.reduce(function(m,t){return Math.max(m,textWidth(t));},0);
+    var tw=widest+8, bx=Math.round((W-tw)/2);
+    px(ctx,bx,3,tw,H-6,state.bg);
+    px(ctx,bx,3,tw,1,"#ffffff"); px(ctx,bx,H-4,tw,1,"#ffffff");
+    if(state.l1&&state.l2){
+      drawCentred(ctx,state.l1,6,state.ink,tw);
+      drawCentred(ctx,state.l2,17,state.ink,tw);
+    } else if(state.l1){
+      drawCentred(ctx,state.l1,11,state.ink,tw);
+    }
+    // keep the plate centred on the whole badge
+    bx=bx;
+  }
+
+  function lookSolid(ctx){
+    var bg=state.bg;
+    px(ctx,0,0,W,H,bg);
+    px(ctx,0,0,W,1,shade(bg,55)); px(ctx,0,0,1,H,shade(bg,55));
+    px(ctx,0,H-1,W,1,shade(bg,-55)); px(ctx,W-1,0,1,H,shade(bg,-55));
+    if(state.l1&&state.l2){
+      drawCentred(ctx,state.l1,5,state.ink);
+      drawCentred(ctx,state.l2,15,state.ink);
+      px(ctx,9,H-4,W-18,1,state.rule);
+    } else if(state.l1){
+      drawCentred(ctx,state.l1,11,state.ink);
+      px(ctx,9,H-4,W-18,1,state.rule);
+    }
+  }
+
+  var LOOKS=[
+    ["raised",lookRaised],
+    ["rainbow",lookRainbow],
+    ["solid",lookSolid]
+  ];
+  var BG=["#c0c0c0","#008080","#e8508a","#000080","#2ec4b6","#fd0","#1b1b1b","#f4eee0","#800080","#3b3"];
+  var PRESETS=[
+    ["made by hand","no frameworks"],
+    ["one file each",""],
+    ["best viewed","in a browser"],
+    ["morgan","little pages"],
+    ["no cookies","no tracking"]
+  ];
+
+  var state={l1:"made by hand", l2:"no frameworks", look:"raised", bg:"#c0c0c0", ink:"#111111", rule:"#e8508a"};
 
   var big=document.getElementById("big"), tiny=document.getElementById("tiny");
   var ctx=big.getContext("2d"), tctx=tiny.getContext("2d");
   ctx.imageSmoothingEnabled=false; tctx.imageSmoothingEnabled=false;
 
-  function hex2rgb(h){h=h.replace("#","");
-    if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
-    return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
-  function shade(h,amt){
-    var c=hex2rgb(h).map(function(v){return Math.max(0,Math.min(255,Math.round(v+amt)));});
-    return "rgb("+c[0]+","+c[1]+","+c[2]+")";
-  }
-  function dark(h){return shade(h,-60);}
-  function light(h){return shade(h,70);}
-
-  function fillBg(c){ c.fillStyle=state.bg; c.fillRect(0,0,W,H); }
-
-  function drawBg(c){
-    if(state.style==="rainbow"){
-      var hs=[5,5,5,5,6,5], y=0;
-      for(var i=0;i<6;i++){ c.fillStyle=RAINBOW[i]; c.fillRect(0,y,W,hs[i]); y+=hs[i]; }
-      return;
-    }
-    fillBg(c);
-    if(state.style==="dither"){
-      c.fillStyle=dark(state.bg);
-      for(var yy=0;yy<H;yy++) for(var xx=(yy%2);xx<W;xx+=2) c.fillRect(xx,yy,1,1);
-    }
-    if(state.style==="bevel"){
-      c.fillStyle=light(state.bg); c.fillRect(0,0,W,1); c.fillRect(0,0,1,H);
-      c.fillStyle=dark(state.bg);   c.fillRect(0,H-1,W,1); c.fillRect(W-1,0,1,H);
-      c.fillStyle=light(state.bg); c.fillRect(1,1,W-2,1); c.fillRect(1,1,1,H-2);
-      c.fillStyle=dark(state.bg);   c.fillRect(1,H-2,W-2,1); c.fillRect(W-2,1,1,H-2);
-    } else {
-      c.fillStyle=dark(state.bg);
-      c.fillRect(0,0,W,1); c.fillRect(0,H-1,W,1); c.fillRect(0,0,1,H); c.fillRect(W-1,0,1,H);
-    }
-  }
-
-  function fitText(c,text,maxW,size){
-    var s=size;
-    while(s>5){ c.font="bold "+s+'px "Courier New", monospace';
-      if(c.measureText(text).width<=maxW) return s; s--; }
-    return s;
-  }
-
-  var tmp=document.createElement("canvas"); tmp.width=W; tmp.height=H;
-  var sctx=tmp.getContext("2d");
-
-  // draw on a scratch canvas, then hard-threshold the alpha so the glyphs
-  // land on whole pixels — antialiased type smears badly at 4x
-  function stampText(c,text,y,maxW,size){
-    sctx.clearRect(0,0,W,H);
-    var s=fitText(sctx,text,maxW,size);
-    sctx.font="bold "+s+'px "Courier New", monospace';
-    sctx.textAlign="center"; sctx.textBaseline="alphabetic";
-    sctx.fillStyle="#000";
-    sctx.fillText(text,W/2+1,y+1);
-    sctx.fillStyle=state.txt;
-    sctx.fillText(text,W/2,y);
-    var img=sctx.getImageData(0,0,W,H), d=img.data;
-    for(var i=3;i<d.length;i+=4){ d[i]= d[i]>110 ? 255 : 0; }
-    sctx.putImageData(img,0,0);
-    c.drawImage(tmp,0,0);
+  function lookFn(){
+    for(var i=0;i<LOOKS.length;i++) if(LOOKS[i][0]===state.look) return LOOKS[i][1];
+    return lookRaised;
   }
 
   function render(){
     ctx.clearRect(0,0,W,H);
-    drawBg(ctx);
-    var l1=(state.l1||"").trim(), l2=(state.l2||"").trim();
-    if(l1&&l2){
-      stampText(ctx,l1,13,82,11);
-      stampText(ctx,l2,26,82,9);
-    } else if(l1){
-      stampText(ctx,l1,21,82,12);
-    } else if(l2){
-      stampText(ctx,l2,21,82,10);
-    }
+    lookFn()(ctx);
     tctx.clearRect(0,0,W,H);
     tctx.drawImage(big,0,0);
-    syncControls();
-  }
 
-  function syncControls(){
-    document.querySelectorAll("#styles .pick").forEach(function(b){
-      b.setAttribute("aria-pressed", b.dataset.style===state.style?"true":"false");
+    document.querySelectorAll("#looks .pick").forEach(function(b){
+      b.setAttribute("aria-pressed", b.dataset.look===state.look?"true":"false");
     });
     document.querySelectorAll("#bgs .sw").forEach(function(b){
-      b.setAttribute("aria-pressed", b.dataset.col===state.bg?"true":"false");
+      b.setAttribute("aria-pressed", b.dataset.bg===state.bg?"true":"false");
     });
-    document.querySelectorAll("[data-txt]").forEach(function(b){
-      b.setAttribute("aria-pressed", b.dataset.txt===state.txt?"true":"false");
+    document.querySelectorAll("[data-ink]").forEach(function(b){
+      b.setAttribute("aria-pressed", b.dataset.ink===state.ink?"true":"false");
     });
     var i1=document.getElementById("line1"), i2=document.getElementById("line2");
     if(document.activeElement!==i1) i1.value=state.l1;
     if(document.activeElement!==i2) i2.value=state.l2;
+    paintSnip();
+  }
+
+  function slug(t){
+    return t.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "badge";
+  }
+  function paintSnip(){
+    var name=slug(state.l1||state.l2||"badge");
+    var alt=[state.l1,state.l2].filter(Boolean).join(" ");
+    document.getElementById("snip").textContent =
+      '<img src="badges/'+name+'.png" width="88" height="31" alt="'+alt+'">';
   }
 
   function build(){
-    var sbox=document.getElementById("styles");
-    STYLES.forEach(function(pair){
+    var looks=document.getElementById("looks");
+    LOOKS.forEach(function(l){
       var b=document.createElement("button");
-      b.className="pick"; b.type="button"; b.dataset.style=pair[0]; b.textContent=pair[1];
-      b.addEventListener("click",function(){ state.style=pair[0]; render(); });
-      sbox.appendChild(b);
+      b.className="pick"; b.type="button"; b.dataset.look=l[0]; b.textContent=l[0];
+      b.addEventListener("click",function(){ state.look=l[0]; render(); });
+      looks.appendChild(b);
     });
-    var box=document.getElementById("bgs");
-    BG.forEach(function(col){
+    var bgs=document.getElementById("bgs");
+    BG.forEach(function(c){
       var b=document.createElement("button");
-      b.className="sw"; b.type="button"; b.style.background=col;
-      b.dataset.col=col; b.setAttribute("aria-label","background "+col);
-      b.addEventListener("click",function(){ state.bg=col; render(); });
-      box.appendChild(b);
+      b.className="sw"; b.type="button"; b.style.background=c; b.dataset.bg=c;
+      b.setAttribute("aria-label","background "+c);
+      b.addEventListener("click",function(){ state.bg=c; render(); });
+      bgs.appendChild(b);
     });
-    document.querySelectorAll("[data-txt]").forEach(function(b){
-      b.addEventListener("click",function(){ state.txt=b.dataset.txt; render(); });
+    var pres=document.getElementById("presets");
+    PRESETS.forEach(function(p){
+      var b=document.createElement("button");
+      b.className="pick"; b.type="button";
+      b.textContent=p[1]? p[0]+" / "+p[1] : p[0];
+      b.addEventListener("click",function(){ state.l1=p[0]; state.l2=p[1]; render(); });
+      pres.appendChild(b);
     });
-    document.getElementById("txtPick").addEventListener("input",function(e){
-      state.txt=e.target.value; render();
+    document.querySelectorAll("[data-ink]").forEach(function(b){
+      b.addEventListener("click",function(){ state.ink=b.dataset.ink; render(); });
+    });
+    document.getElementById("inkPick").addEventListener("input",function(e){
+      state.ink=e.target.value; render();
     });
     document.getElementById("line1").addEventListener("input",function(e){
       state.l1=e.target.value; render();
@@ -264,12 +386,27 @@
     });
     document.getElementById("save1").addEventListener("click",function(){ save(1); });
     document.getElementById("save4").addEventListener("click",function(){ save(4); });
-    document.getElementById("shuffle").addEventListener("click",function(){
-      var i=Math.floor(Math.random()*BG.length), j=Math.floor(Math.random()*STYLES.length);
-      state.bg=BG[i]; state.style=STYLES[j][0];
-      state.txt = (i===5||i===6) ? "#111111" : "#ffffff";
-      render();
+    document.getElementById("copysnip").addEventListener("click",function(){
+      copy(document.getElementById("snip").textContent,"snippet copied");
     });
+  }
+
+  var toast=document.getElementById("toast"), tt=null;
+  function say(msg){
+    toast.textContent=msg; toast.classList.add("on");
+    clearTimeout(tt); tt=setTimeout(function(){toast.classList.remove("on");},1300);
+  }
+  function copy(text,label){
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){say(label||"copied");},
+        function(){fallback();});
+    } else fallback();
+    function fallback(){
+      var t=document.createElement("textarea"); t.value=text;
+      document.body.appendChild(t); t.select();
+      try{ document.execCommand("copy"); say(label||"copied"); }catch(e){ say("copy failed"); }
+      t.remove();
+    }
   }
 
   function save(scale){
@@ -279,14 +416,17 @@
     oc.imageSmoothingEnabled=false;
     oc.drawImage(big,0,0,out.width,out.height);
     var a=document.createElement("a");
-    a.download="badge.png";
+    a.download=slug(state.l1||state.l2||"badge")+(scale>1?"-"+scale+"x":"")+".png";
     a.href=out.toDataURL("image/png");
     document.body.appendChild(a); a.click(); a.remove();
+    say("saved "+a.download);
   }
 
   build(); render();
-  window.__badge={state:state,render:render,get:function(){return {style:state.style,bg:state.bg,txt:state.txt};},
-    px:function(){return Array.prototype.slice.call(ctx.getImageData(2,2,1,1).data).join(",");}};
+  window.__badge={state:state,
+    get:function(){return {look:state.look,bg:state.bg,ink:state.ink,l1:state.l1,l2:state.l2};},
+    set:function(o){ Object.keys(o).forEach(function(k){state[k]=o[k];}); render(); },
+    px:function(x,y){return Array.prototype.slice.call(ctx.getImageData(x,y,1,1).data).join(",");}};
 })();
 </script>
 </body>
