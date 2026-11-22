@@ -27,7 +27,8 @@ One look, applied everywhere, so the site reads as one place:
 - text: Times for reading, Tahoma for window furniture, Courier for labels and dates
 - lowercase everywhere, via `text-transform`
 - links blue `#0000ee`, visited `#551a8b`
-- no external fonts, no CDNs, no scripts on the homepage. every page is one file.
+- no external fonts, no CDNs. one small local script, `webring.js`, draws the page ring at the bottom.
+  every page is otherwise one file.
 
 ## how to add a drawer
 
