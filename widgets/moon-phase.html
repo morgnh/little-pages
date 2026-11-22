@@ -3,80 +3,152 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>moon phase</title>
+<title>tonight's moon</title>
 <style>
-  :root{
-    --ink: #1b1b1b;
-    --line: #1b1b1b;
-    --panel: #fdf8ec;
-    --dim: #554e42;
-    --mono: "Courier New", "Courier", monospace;
+  /* 1998 rules: flat colour, hard bevels, no radius, no gradient, no glow.
+     the only "texture" is a tiled star background. */
+  html,body{margin:0;padding:0}
+  body{
+    background-color:#000814;
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='%23000814'/><rect x='5' y='7' width='1' height='1' fill='%23ffffff'/><rect x='21' y='19' width='1' height='1' fill='%23ffe9b0'/><rect x='38' y='4' width='1' height='1' fill='%23ffffff'/><rect x='50' y='31' width='1' height='1' fill='%23ffffff'/><rect x='12' y='44' width='1' height='1' fill='%23cfe4ff'/><rect x='33' y='51' width='1' height='1' fill='%23ffffff'/><rect x='57' y='58' width='1' height='1' fill='%23ffe9b0'/><rect x='60' y='12' width='1' height='1' fill='%23ffffff'/></svg>");
+    background-repeat:repeat;
+    color:#000;font-family:"Times New Roman",Times,serif;font-size:14px;padding:10px 8px 26px;
   }
-  html,body{background:#efe7d3;margin:0;padding:0}
-  body{font-family:var(--mono);color:var(--ink);font-size:14px;line-height:1.45;
-       padding:0}
-  .wrap{display:flex;flex-direction:column;gap:14px;max-width:960px;padding:14px 16px 20px}
+  a{color:#0000ee;text-decoration:underline}
+  a:visited{color:#551a8b}
+  a:hover{background:#ffff66}
 
-  .rainbow{height:10px;border:3px solid var(--line);
-    background:linear-gradient(to right,
-      #e22 0 16.6%, #f80 16.6% 33.3%, #fd0 33.3% 50%,
-      #3b3 50% 66.6%, #39c 66.6% 83.3%, #a4f 83.3% 100%)}
-  h1{font-size:25px;margin:0;text-transform:lowercase;letter-spacing:-1px;color:#111;
-     display:inline-block;background:#e8508a;padding:2px 9px 3px;align-self:flex-start;
-     border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
-  h1 .hrt{color:#111;font-size:19px}
-  .sub{margin:0;color:var(--dim);font-size:13px;max-width:60ch}
+  .page{max-width:660px;margin:0 auto}
 
-  .panel{background:var(--panel);border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
+  h1{margin:6px 0 2px;text-align:center;font-family:"Times New Roman",Times,serif;
+     font-size:34px;font-weight:700;color:#fff;letter-spacing:0;
+     text-shadow:2px 2px 0 #000080, 0 0 1px #000080}
+  h1 span{color:#ffff66}
+  .sub{text-align:center;font-family:"Courier New",monospace;font-size:12px;color:#c0d0ff;margin:0 0 8px}
+  .rainbow{height:7px;margin:0 0 8px;background:#e8508a;border-top:1px solid #ff9ec4;
+    background-image:linear-gradient(90deg,
+      #ff0000 0 14.2%,#ff8000 14.2% 28.4%,#ffff00 28.4% 42.6%,
+      #00c000 42.6% 56.8%,#0060ff 56.8% 71%,#8000c0 71% 85.2%,#ff0000 85.2% 100%)}
 
-  .top{display:grid;grid-template-columns:auto 1fr;gap:18px;padding:14px;align-items:center}
-  @media (max-width:520px){ .top{grid-template-columns:1fr;justify-items:center;gap:12px} }
+  /* hard-edged window */
+  .win{background:#c0c0c0;border:2px solid;border-color:#ffffff #808080 #808080 #ffffff;
+       margin:0 0 9px}
+  .bar{display:flex;align-items:center;gap:4px;background:#000080;color:#fff;
+       padding:2px 3px;font-family:Tahoma,Verdana,sans-serif;font-size:12px;font-weight:700}
+  .bar b{flex:1;font-weight:700}
+  .bar i{width:15px;height:13px;background:#c0c0c0;color:#000;border:1px solid;
+    border-color:#fff #404040 #404040 #fff;font:700 10px/11px Tahoma,sans-serif;
+    text-align:center;font-style:normal}
+  .inside{padding:8px}
 
-  canvas#moon{width:224px;height:224px;image-rendering:pixelated;display:block}
-  .facts{display:flex;flex-direction:column;gap:9px;width:100%}
-  .phase-name{font-size:21px;text-transform:lowercase;letter-spacing:-.5px;margin:0;line-height:1.15}
-  .lit{display:flex;align-items:baseline;gap:7px;font-size:29px;line-height:1}
-  .lit small{font-size:11px;letter-spacing:2px;text-transform:lowercase;color:var(--dim)}
-  dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12px}
-  dt{color:var(--dim);letter-spacing:1px;text-transform:lowercase}
+  .top{display:table;width:100%}
+  .mooncell,.factcell{display:table-cell;vertical-align:middle}
+  .mooncell{width:196px}
+  @media (max-width:520px){
+    .top,.mooncell,.factcell{display:block;width:auto;text-align:center}
+    .mooncell{margin:0 auto}
+  }
+  .moonbox{display:inline-block;background:#000;border:2px solid;
+    border-color:#808080 #ffffff #ffffff #808080;padding:4px;line-height:0}
+  canvas#moon{width:168px;height:168px;image-rendering:pixelated;display:block}
+
+  .phase-name{margin:0 0 2px;font-size:23px;font-weight:700;font-style:italic;color:#000080}
+  .lit{margin:0 0 6px;font-family:"Courier New",monospace;font-size:13px}
+  .lit b{font-size:22px;color:#800000;font-family:"Times New Roman",serif}
+  dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:1px 8px;font-family:"Courier New",monospace;font-size:12px}
+  dt{color:#000080}
   dd{margin:0}
 
-  .strip{padding:12px}
-  .strip h2{margin:0 0 9px;font-size:11px;letter-spacing:2px;text-transform:lowercase;color:var(--dim)}
-  canvas#cycle{width:100%;height:auto;image-rendering:pixelated;display:block;
-    border:3px solid var(--line);background:#23252f}
-  .strip .marks{display:flex;justify-content:space-between;padding:0 3px;font-size:10px;color:var(--dim);
-    letter-spacing:1px;text-transform:lowercase;margin-top:5px}
+  .links{text-align:center;font-size:13px;margin:0 0 9px;color:#fff}
+  .links a{margin:0 6px;color:#ffff99}
+  .links a:visited{color:#ffb0ff}
+  .links a:hover{background:#000080;color:#fff}
+  .links .sep{color:#808080}
 
-  .foot{margin:0;font-size:11px;color:var(--dim);letter-spacing:1px;text-transform:lowercase}
+  .strip h2{margin:0 0 6px;font-size:13px;font-weight:700;color:#000080;font-family:Tahoma,sans-serif}
+  .stripin{background:#000;border:2px solid;border-color:#808080 #ffffff #ffffff #808080;padding:5px}
+  canvas#cycle{width:100%;height:auto;image-rendering:pixelated;display:block}
+  .marks{display:flex;justify-content:space-between;padding:0 2px;margin-top:4px;
+    font-family:"Courier New",monospace;font-size:10px;color:#ffff99}
+
+  .under{display:flex;align-items:center;gap:6px;margin:0 0 9px;padding:3px 6px;background:#ffff99;
+    border:1px solid #000;font-family:Tahoma,sans-serif;font-size:11px}
+  .under b{background:#000;color:#ffff00;padding:0 4px}
+
+  hr{border:0;border-top:1px solid #808080;border-bottom:1px solid #ffffff;margin:10px 0}
+  .foot{text-align:center;font-family:"Times New Roman",serif;font-size:12px;color:#c0d0ff;
+    line-height:1.75}
+  .foot b{color:#ffff66;font-weight:400}
+  .counter{display:inline-flex;gap:2px;vertical-align:middle;margin:0 3px}
+  .counter i{background:#000;color:#00ff00;border:1px solid #808080;padding:1px 3px;
+    font:700 12px/1 "Courier New",monospace;font-style:normal}
+  .badges{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:8px 0 0}
+  .bg{width:88px;height:31px;border:1px solid #fff;background:#008080;color:#fff;
+    font-family:"Courier New",monospace;font-size:9px;line-height:1.25;text-align:center;
+    padding:2px 1px;box-sizing:border-box;overflow:hidden}
+  .bg.dark{background:#000}
+  .bg.pink{background:#e8508a;color:#000}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="page">
+
+  <h1>tonight's <span>moon</span></h1>
+  <p class="sub">worked out from the clock on this machine &middot; look up and check me</p>
   <div class="rainbow"></div>
-  <h1>moon phase <span class="hrt">&#9829;</span></h1>
-  <p class="sub">tonight's moon, worked out from the clock on this machine. look up and check me.</p>
 
-  <section class="top panel">
-    <canvas id="moon" width="64" height="64" aria-label="the moon tonight"></canvas>
-    <div class="facts">
-      <p class="phase-name" id="pname">waxing crescent</p>
-      <div class="lit"><span id="pct">0%</span><small>lit</small></div>
-      <dl>
-        <dt>age</dt><dd id="age">0 days</dd>
-        <dt>next full</dt><dd id="full">…</dd>
-        <dt>next new</dt><dd id="newn">…</dd>
-      </dl>
+  <div class="win">
+    <div class="bar"><b>moon.exe</b><i>_</i><i>&#9633;</i><i>&#215;</i></div>
+    <div class="inside">
+      <div class="top">
+        <div class="mooncell">
+          <div class="moonbox"><canvas id="moon" width="64" height="64" aria-label="the moon tonight"></canvas></div>
+        </div>
+        <div class="factcell">
+          <p class="phase-name" id="pname">waxing crescent</p>
+          <p class="lit"><b id="pct">0%</b> lit</p>
+          <dl>
+            <dt>age</dt><dd id="age">0 days</dd>
+            <dt>next full</dt><dd id="full">&hellip;</dd>
+            <dt>next new</dt><dd id="newn">&hellip;</dd>
+          </dl>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
 
-  <section class="strip panel">
-    <h2>the next 30 nights</h2>
-    <canvas id="cycle" width="300" height="22" aria-label="phase of the moon for the next 30 days"></canvas>
-    <div class="marks"><span id="mk1">today</span><span id="mk2">30 days on</span></div>
-  </section>
+  <div class="links">
+    <a href="javascript:location.reload()">look again</a><span class="sep">|</span>
+    <a href="../cabinet.html">back to the cabinet</a><span class="sep">|</span>
+    <a href="https://www.timeanddate.com/moon/phases/" target="_blank" rel="noopener">check it on timeanddate</a>
+  </div>
 
-  <p class="foot">computed here, not fetched. one drawing per night for the strip.</p>
+  <div class="win strip">
+    <div class="bar"><b>30nights.gif</b><i>_</i><i>&#9633;</i><i>&#215;</i></div>
+    <div class="inside">
+      <h2>the next 30 nights</h2>
+      <div class="stripin">
+        <canvas id="cycle" width="300" height="22" aria-label="phase of the moon for the next 30 days"></canvas>
+        <div class="marks"><span id="mk1">today</span><span id="mk2">30 days on</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="under"><b>note</b> computed here, not fetched. one drawing per night for the strip.</div>
+
+  <hr>
+
+  <div class="foot">
+    you are visitor <span class="counter" id="counter"></span> to the moon page<br>
+    <b>last updated whenever i look up</b> &#9829; online since november 2026 &#9829; best viewed at 800&times;600<br>
+    made by hand, no frameworks, no trackers
+    <div class="badges">
+      <a class="bg pink" href="../cabinet.html">made<br>by hand</a>
+      <div class="bg dark">no<br>frameworks</div>
+      <div class="bg">best viewed<br>in netscape</div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -101,36 +173,29 @@
     return M+C+rad*102.9372+PI;
   }
   function moonVals(d){
-    var Lp=rad*(218.316+13.176396*d),   // mean longitude
-        Mp=rad*(134.963+13.064993*d),   // mean anomaly of the moon
-        D =rad*(297.850+12.190749*d),   // mean elongation
-        F =rad*(93.272+13.229350*d);    // argument of latitude
-    // the periodic terms beyond the first are what take this from a few hours
-    // off to about an hour off
+    var Lp=rad*(218.316+13.176396*d),
+        Mp=rad*(134.963+13.064993*d),
+        D =rad*(297.850+12.190749*d),
+        F =rad*(93.272+13.229350*d);
     var l=Lp + rad*6.289*sin(Mp)
-             + rad*1.274*sin(2*D-Mp)   // evection
-             + rad*0.658*sin(2*D)      // variation
+             + rad*1.274*sin(2*D-Mp)
+             + rad*0.658*sin(2*D)
              + rad*0.214*sin(2*Mp);
     var b=rad*5.128*sin(F), dist=385001-20905*cos(Mp);
-    return {lon:l, lat:b, dist:dist,
-            ra:rightAscension(l,b), dec:declination(l,b)};
+    return {lon:l, lat:b, dist:dist, ra:rightAscension(l,b), dec:declination(l,b)};
   }
-  function moonCoords(d){ return moonVals(d); }
-  function elong(d){                       // moon minus sun, 0..2pi
+  function elong(d){
     var x=moonVals(d).lon - sunLong(d);
     return ((x%(2*PI))+2*PI)%(2*PI);
   }
-  // phase: 0 new, .25 first quarter, .5 full, .75 last quarter. fraction: 0..1 lit
   function moonAt(date){
-    var d=toDays(date), s=sunCoords(d), m=moonCoords(d);
+    var d=toDays(date), s=sunCoords(d), m=moonVals(d);
     var phi=acos(Math.max(-1,Math.min(1,
       sin(s.dec)*sin(m.dec)+cos(s.dec)*cos(m.dec)*cos(s.ra-m.ra))));
     var inc=atan2(s.dist*sin(phi), m.dist-s.dist*cos(phi));
     var fraction=Math.max(0,Math.min(1,(1+cos(inc))/2));
-    var phase=elong(d)/(2*PI);           // 0 new, .5 full, monotonic
-    return {fraction:fraction, phase:phase};
+    return {fraction:fraction, phase:elong(d)/(2*PI)};
   }
-
   function phaseName(p){
     if(p<0.02||p>0.98) return "new moon";
     if(p<0.22) return "waxing crescent";
@@ -141,15 +206,13 @@
     if(p<0.78) return "last quarter";
     return "waning crescent";
   }
-
-  // walk forward hour by hour to the next full (phase .5) or new (phase 0)
   function nextOf(target, from){
     var step=3600000, t=from.getTime(), prev=moonAt(new Date(t)).phase, cur;
     for(var i=0;i<24*40;i++){
       cur=moonAt(new Date(t+step)).phase;
       var crossed=false;
       if(target===0.5){ if(prev<0.5&&cur>=0.5) crossed=true; }
-      else { if(prev>cur) crossed=true; }   // phase only wraps at the new moon now
+      else { if(prev>cur) crossed=true; }
       if(crossed){
         var frac=(target===0.5) ? (0.5-prev)/(cur-prev) : (1-prev)/((1-prev)+cur);
         return new Date(t+step*Math.max(0,Math.min(1,frac)));
@@ -158,15 +221,25 @@
     }
     return null;
   }
+  function prevOf(target, from){
+    var step=3600000, t=from.getTime(), prev=moonAt(new Date(t)).phase, cur;
+    for(var i=0;i<24*40;i++){
+      cur=moonAt(new Date(t-step)).phase;
+      if(cur>prev){
+        var frac=prev/(prev+(1-cur));
+        return new Date(t-step*Math.max(0,Math.min(1,1-frac)));
+      }
+      prev=cur; t-=step;
+    }
+    return null;
+  }
 
-  var LIT="242,238,214", UNLIT="38,40,58";
-  function paintMoon(cv, fraction, waxing, big){
+  function paintMoon(cv, fraction, waxing){
     var c=cv.getContext("2d"), W=cv.width, H=cv.height;
     var img=c.createImageData(W,H), d=img.data;
     var cx=W/2, cy=H/2, R=Math.min(W,H)/2-0.5;
     var phi=acos(Math.max(-1,Math.min(1,2*fraction-1)));
     var sgn=waxing?1:-1, sp=sin(phi), cp=cos(phi);
-    // a few fixed dark maria so the lit face has texture
     var spots=[[-.32,-.18,.20],[-.05,.24,.14],[.26,-.30,.13],[-.42,.34,.10],[.14,.44,.10]];
     for(var y=0;y<H;y++){
       for(var x=0;x<W;x++){
@@ -174,14 +247,14 @@
         if(rr>1){ d[i+3]=0; continue; }
         var z=Math.sqrt(1-rr);
         var lit=(nx*sgn*sp+z*cp)>0;
-        var col=lit?[240,232,200]:[42,44,62];
+        var col=lit?[244,236,204]:[40,42,64];
         if(lit){
           for(var k=0;k<spots.length;k++){
             var dx=nx-spots[k][0], dy=ny-spots[k][1];
-            if(dx*dx+dy*dy<spots[k][2]*spots[k][2]){ col=[212,203,172]; break; }
+            if(dx*dx+dy*dy<spots[k][2]*spots[k][2]){ col=[214,205,174]; break; }
           }
         }
-        if(rr>0.94){ col=[27,27,27]; }   // hard rim so the disc reads on cream
+        if(rr>0.94){ col=[22,22,44]; }
         d[i]=col[0]; d[i+1]=col[1]; d[i+2]=col[2]; d[i+3]=255;
       }
     }
@@ -191,40 +264,26 @@
   function drawCycle(now){
     var cv=document.getElementById("cycle"), c=cv.getContext("2d");
     var N=30;
-    // size the strip to the panel it sits in, so it never stretches or clips
-    var W=Math.max(210, Math.round(cv.clientWidth||cv.parentElement.clientWidth-24||300));
+    var W=Math.max(210, Math.round(cv.clientWidth||300));
     var cellW=W/N, R=Math.max(3,cellW/2-1.5), H=Math.round(2*R+3);
     cv.width=W; cv.height=H;
     c.clearRect(0,0,W,H);
     for(var n=0;n<N;n++){
       var t=new Date(now.getTime()+n*DAY), mi=moonAt(t);
-      var cx=n*cellW+cellW/2, cy=H/2, Ri=R;
+      var cx=n*cellW+cellW/2, cy=H/2;
       var phi=acos(Math.max(-1,Math.min(1,2*mi.fraction-1)));
       var sgn=(mi.phase<0.5)?1:-1, sp=sin(phi), cp=cos(phi);
-      for(var yy=Math.ceil(cy-Ri); yy<=cy+Ri; yy++){
-        for(var xx=Math.ceil(cx-Ri); xx<=cx+Ri; xx++){
-          var nx=(xx+0.5-cx)/Ri, ny=(yy+0.5-cy)/Ri;
+      for(var yy=Math.ceil(cy-R); yy<=cy+R; yy++){
+        for(var xx=Math.ceil(cx-R); xx<=cx+R; xx++){
+          var nx=(xx+0.5-cx)/R, ny=(yy+0.5-cy)/R;
           if(nx*nx+ny*ny>1) continue;
           var z=Math.sqrt(Math.max(0,1-nx*nx-ny*ny));
           var lit=(nx*sgn*sp+z*cp)>0;
-          c.fillStyle= lit ? "rgb(244,236,204)" : "rgb(52,56,78)";
+          c.fillStyle= lit ? "rgb(244,236,204)" : "rgb(78,84,124)";
           c.fillRect(xx,yy,1,1);
         }
       }
     }
-  }
-
-  function prevOf(target, from){
-    var step=3600000, t=from.getTime(), prev=moonAt(new Date(t)).phase, cur;
-    for(var i=0;i<24*40;i++){
-      cur=moonAt(new Date(t-step)).phase;
-      if(cur>prev){                      // walking back, the wrap is the last new moon
-        var frac=prev/(prev+(1-cur));
-        return new Date(t-step*Math.max(0,Math.min(1,1-frac)));
-      }
-      prev=cur; t-=step;
-    }
-    return null;
   }
 
   function fmtDate(d){
@@ -241,8 +300,9 @@
     document.getElementById("pname").textContent=phaseName(mi.phase);
     document.getElementById("pct").textContent=Math.round(mi.fraction*100)+"%";
     var lastNew=prevOf(0,now);
-    document.getElementById("age").textContent=lastNew? ((now-lastNew)/DAY).toFixed(1)+" days old" : (mi.phase*29.530587).toFixed(1)+" days old";
-    paintMoon(document.getElementById("moon"), mi.fraction, mi.phase<0.5, true);
+    document.getElementById("age").textContent=
+      lastNew? ((now-lastNew)/DAY).toFixed(1)+" days old" : (mi.phase*29.530587).toFixed(1)+" days old";
+    paintMoon(document.getElementById("moon"), mi.fraction, mi.phase<0.5);
 
     var full=nextOf(0.5,now), newm=nextOf(0,now);
     document.getElementById("full").textContent= full? fmtIn(full,now) : "…";
@@ -252,6 +312,12 @@
     drawCycle(now);
 
     window.addEventListener("resize",function(){drawCycle(now);},{passive:true});
+
+    var count=document.getElementById("counter");
+    "004271".split("").forEach(function(ch){
+      var i=document.createElement("i"); i.textContent=ch; count.appendChild(i);
+    });
+
     window.__moon={phase:mi.phase,fraction:mi.fraction,
       full:full&&full.toISOString(), newm:newm&&newm.toISOString()};
   }
@@ -259,5 +325,7 @@
   run();
 })();
 </script>
+</body>
+</html>
 </body>
 </html>

@@ -19,7 +19,8 @@ live at https://morgnh.github.io/little-pages/ (GitHub Pages, `main` branch, roo
 | `widgets/now-page.html` | reading, making, into. saved in the browser. also an exhibit |
 | `widgets/color-mixer.html` | two paints, ratio, the mix and its opposite. also an exhibit |
 | `widgets/badge-maker.html` | 88x31 badge maker, saves a png. also an exhibit |
-| `widgets/moon-phase.html` | tonight's moon plus 30 nights, computed locally. also an exhibit |
+| `widgets/moon-phase.html` | tonight's moon plus 30 nights, 1998 windows and starfield. also an exhibit |
+| `widgets/moon-phase-clean.html` | the cream version of the same page, kept for comparison |
 | `widgets/pet-roll-call.html` | the three animals, with boop counters. also an exhibit |
 | `widgets/rabbit-hole.html` | one button, thirty topics. also an exhibit |
 | `widgets/README.md` | notes on the widgets and how to host them |
