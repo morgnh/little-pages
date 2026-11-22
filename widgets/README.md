@@ -5,8 +5,8 @@ Small HTML widgets, built in Hermes in November 2026.
 **Start at `../cabinet.html`** rather than here: that page shows every widget on its own
 plinth, running live. This folder is the files themselves.
 
-The first three are also collected on a tabbed shelf at `index.html`. Five more arrived
-later (color-mixer, badge-maker, moon-phase, pet-roll-call, rabbit-hole) and are only on
+The first three are also collected on a tabbed shelf at `index.html`. Six more arrived
+later (now-page, color-mixer, badge-maker, moon-phase, pet-roll-call, rabbit-hole) and are only on
 the cabinet, not on the tabbed page.
 
 ![The collection page](collection-preview.png)

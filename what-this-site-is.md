@@ -16,6 +16,7 @@ live at https://morgnh.github.io/little-pages/ (GitHub Pages, `main` branch, roo
 | `widgets/jellypet.html` | virtual pet, live canvas, feed and play. also its own page in the ring |
 | `widgets/tide-widget.html` | charleston harbor tide chart, baked-in snapshot. also its own page in the ring |
 | `widgets/banana-stand.html` | quote dispenser with a counter. also its own page in the ring |
+| `widgets/now-page.html` | reading, making, into. saved in the browser. also an exhibit |
 | `widgets/color-mixer.html` | two paints, ratio, the mix and its opposite. also an exhibit |
 | `widgets/badge-maker.html` | 88x31 badge maker, saves a png. also an exhibit |
 | `widgets/moon-phase.html` | tonight's moon plus 30 nights, computed locally. also an exhibit |

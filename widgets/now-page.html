@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>the now page</title>
+<style>
+  :root{
+    --ink:#1b1b1b; --line:#1b1b1b; --panel:#fdf8ec; --dim:#554e42;
+    --mono:"Courier New","Courier",monospace;
+  }
+  html,body{background:#efe7d3;margin:0;padding:0}
+  body{font-family:var(--mono);color:var(--ink);font-size:14px;line-height:1.45;padding:0}
+  .wrap{display:flex;flex-direction:column;gap:14px;max-width:720px;padding:14px 16px 20px}
+
+  .rainbow{height:10px;border:3px solid var(--line);
+    background:linear-gradient(to right,
+      #e22 0 16.6%, #f80 16.6% 33.3%, #fd0 33.3% 50%,
+      #3b3 50% 66.6%, #39c 66.6% 83.3%, #a4f 83.3% 100%)}
+  h1{font-size:25px;margin:0;text-transform:lowercase;letter-spacing:-1px;color:#111;
+     display:inline-block;background:#e8508a;padding:2px 9px 3px;align-self:flex-start;
+     border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
+  h1 .hrt{color:#111;font-size:19px}
+  .sub{margin:0;color:var(--dim);font-size:13px;max-width:58ch}
+
+  .panel{background:var(--panel);border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
+
+  .sheet{padding:0}
+  .pin{display:flex;justify-content:space-between;align-items:center;gap:10px;
+    border-bottom:3px solid var(--line);padding:6px 11px;background:#fff3cf;
+    font-size:10px;letter-spacing:2px;text-transform:lowercase}
+  .pin b{font-size:11px;letter-spacing:1px}
+  .fields{padding:12px;display:flex;flex-direction:column;gap:13px}
+
+  .row{display:grid;grid-template-columns:86px 1fr;gap:10px;align-items:start}
+  @media (max-width:480px){ .row{grid-template-columns:1fr;gap:4px} }
+  .row label{font-size:10px;letter-spacing:2px;text-transform:lowercase;color:var(--dim);
+    padding-top:7px}
+  .row label span{display:block;color:#6b6357;letter-spacing:1px;font-size:9.5px}
+
+  textarea{font-family:var(--mono);font-size:13.5px;line-height:1.5;width:100%;box-sizing:border-box;
+    min-height:52px;resize:vertical;padding:7px 9px;color:var(--ink);background:#fffdf6;
+    border:3px solid var(--line);box-shadow:inset 2px 2px 0 rgba(0,0,0,.07)}
+  textarea::placeholder{color:#8f8674}
+textarea:focus{outline:3px solid #e8508a;outline-offset:1px;background:#fff}
+
+  .footrow{display:flex;flex-wrap:wrap;align-items:center;gap:9px;
+    border-top:3px solid var(--line);padding:9px 12px 10px;background:#fff3cf}
+  button{font-family:var(--mono);font-size:11px;padding:6px 10px;cursor:pointer;
+    background:var(--panel);color:var(--ink);border:3px solid var(--line);
+    box-shadow:3px 3px 0 var(--line);text-transform:lowercase;letter-spacing:1px}
+  button:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--line)}
+  button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+  .status{margin-left:auto;font-size:10px;letter-spacing:1px;color:var(--dim);text-transform:lowercase}
+  .status.warn{color:#8a1f4f}
+
+  .tip{margin:0;font-size:11px;letter-spacing:1px;text-transform:lowercase;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="rainbow"></div>
+  <h1>the now page <span class="hrt">&#9829;</span></h1>
+  <p class="sub">what i'm reading, making and into this week. type in it, it remembers on this machine.</p>
+
+  <section class="panel sheet">
+    <div class="pin">
+      <b>as of <span id="stamp">today</span></b>
+      <span>this page likes to be edited</span>
+    </div>
+
+    <div class="fields">
+      <div class="row">
+        <label for="reading">reading<span>book, article, pile</span></label>
+        <textarea id="reading" rows="2" placeholder="the thing on the nightstand"></textarea>
+      </div>
+      <div class="row">
+        <label for="making">making<span>in progress</span></label>
+        <textarea id="making" rows="2" placeholder="what's half finished right now"></textarea>
+      </div>
+      <div class="row">
+        <label for="into">into<span>this week's obsession</span></label>
+        <textarea id="into" rows="2" placeholder="the topic you keep opening tabs about"></textarea>
+      </div>
+    </div>
+
+    <div class="footrow">
+      <button id="copy" type="button">copy as text</button>
+      <button id="wipe" type="button">start over</button>
+      <span class="status" id="status">saved</span>
+    </div>
+  </section>
+
+  <p class="tip">everything stays in this browser. nothing is uploaded, nothing is tracked.</p>
+</div>
+
+<script>
+(function(){
+  var KEY="hermes-now-page-v1";
+  var FIELDS=["reading","making","into"];
+  var statusEl=document.getElementById("status");
+  var stampEl=document.getElementById("stamp");
+
+  function load(){
+    try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return {}; }
+  }
+  function save(o){ try{ localStorage.setItem(KEY,JSON.stringify(o)); return true; }catch(e){ return false; } }
+
+  var data=load();
+
+  function paintStamp(){
+    var when=data.when? new Date(data.when) : new Date();
+    var months=["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+    stampEl.textContent=months[when.getMonth()]+" "+when.getDate()+", "+when.getFullYear();
+  }
+
+  FIELDS.forEach(function(id){
+    var el=document.getElementById(id);
+    if(data[id]) el.value=data[id];
+    el.addEventListener("input",function(){
+      data[id]=el.value;
+      data.when=Date.now();
+      var ok=save(data);
+      paintStamp();
+      statusEl.textContent = ok ? "saved" : "can't save here";
+      statusEl.classList.toggle("warn",!ok);
+    });
+  });
+
+  var wipeBtn=document.getElementById("wipe"), armed=false, armTimer=null;
+  wipeBtn.addEventListener("click",function(){
+    if(!armed){
+      armed=true; wipeBtn.textContent="sure? click again";
+      wipeBtn.style.background="#e8508a";
+      armTimer=setTimeout(function(){
+        armed=false; wipeBtn.textContent="start over"; wipeBtn.style.background="";
+      },3000);
+      return;
+    }
+    clearTimeout(armTimer); armed=false;
+    wipeBtn.textContent="start over"; wipeBtn.style.background="";
+    FIELDS.forEach(function(id){ document.getElementById(id).value=""; });
+    data={when:Date.now()};
+    save(data); paintStamp();
+    statusEl.textContent="wiped"; statusEl.classList.remove("warn");
+  });
+
+  document.getElementById("copy").addEventListener("click",function(){
+    var lines=["the now page, "+stampEl.textContent];
+    FIELDS.forEach(function(id){
+      var v=(data[id]||"").trim();
+      if(v) lines.push(id+": "+v);
+    });
+    var text=lines.join("\n");
+    function flash(msg){ statusEl.textContent=msg; statusEl.classList.remove("warn"); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){flash("copied");},
+        function(){fallback();});
+    } else { fallback(); }
+    function fallback(){
+      var t=document.createElement("textarea");
+      t.value=text; document.body.appendChild(t); t.select();
+      try{ document.execCommand("copy"); flash("copied"); }catch(e){ flash("copy failed"); }
+      t.remove();
+    }
+  });
+
+  paintStamp();
+  window.__now={get:function(){return data;}, set:function(id,v){
+    var el=document.getElementById(id); el.value=v;
+    el.dispatchEvent(new Event("input"));
+  }};
+})();
+</script>
+</body>
+</html>
